@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Savage Server Remote</string>
+    <string name="password">Password</string>
+    <string name="port">Port</string>
+    <string name="host">Host</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_connect">Connect</string>
+    <string name="btn_bookmarks">Bookmarks</string>
+    <string name="response">Response</string>
+    <string name="btn_execute">Execute</string>
+    <string name="command">Command</string>
+    <string name="name">Name</string>
+    <string name="no_server">No server bookmarks saved</string>
+    <string name="connect_to">Connect to</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_connect">Connect</string>
+</resources>

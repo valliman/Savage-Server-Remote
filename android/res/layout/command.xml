@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+    <TextView
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:text="@string/command"/>
+    <EditText
+            android:id="@+id/command"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="cmdlist"
+            android:editable="true"
+            android:inputType="text"
+            android:layout_marginBottom="5dip"
+            />
+
+    <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/btn_execute"
+            android:onClick="execute"
+            />
+
+    <TextView
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:text="@string/response"/>
+    <TextView
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/response"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            />
+
+</LinearLayout>

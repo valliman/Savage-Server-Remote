@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true">
+        <TableRow android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/connect"
+                    android:text="Connect"
+                    android:layout_gravity="center"
+                    android:onClick="connect"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/bookmarks"
+                    android:text="Bookmarks"
+                    android:layout_gravity="center"
+                    android:onClick="bookmarks"/>
+        </TableRow>
+        <TableRow android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/add"
+                    android:text="Add"
+                    android:layout_gravity="center"
+                    android:onClick="add"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/info"
+                    android:text="About"
+                    android:onClick="about"
+                    android:layout_gravity="center"/>
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>
