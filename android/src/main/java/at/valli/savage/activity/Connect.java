@@ -89,7 +89,8 @@ public class Connect extends Activity {
                             dialog = ProgressDialog.show(Connect.this, "", "Connecting ...");
                         }
                     });
-                    ctrl.connect(servers[0]);
+                    Server server = servers[0];
+                    ctrl.connect(server.getHost(), server.getPort(), server.getPassword());
                     return true;
                 } catch (final ConnectionException e) {
                     runOnUiThread(new Runnable() {

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -67,7 +66,7 @@ public class Command extends Activity {
                                 dialog = ProgressDialog.show(Command.this, "", "Executing ...");
                             }
                         });
-                        return ctrl.execute(server, command);
+                        return ctrl.execute(server.getHost(), server.getPort(), server.getPassword(), command);
                     }
                 } catch (final ConnectionException e) {
                     runOnUiThread(new Runnable() {

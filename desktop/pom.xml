@@ -11,6 +11,15 @@
 
     <artifactId>desktop</artifactId>
     <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>at.savage.server.remote</groupId>
+            <artifactId>connector</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <defaultGoal>package</defaultGoal>
     </build>

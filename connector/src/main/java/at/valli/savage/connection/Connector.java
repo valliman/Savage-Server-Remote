@@ -1,15 +1,11 @@
 package at.valli.savage.connection;
 
-import android.util.Log;
-import at.valli.savage.domain.Server;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,9 +30,9 @@ public class Connector {
         return instance;
     }
 
-    public void connect(Server server) throws ConnectionException {
+    public void connect(String host, int port, String password) throws ConnectionException {
 
-        String response = execute(server, "svr_adminpassword");
+        String response = execute(host, port, password, "svr_adminpassword");
 
         if (response != null) {
             Pattern pattern = Pattern.compile("(.*) is \"(.*)\"");
@@ -45,16 +41,16 @@ public class Connector {
             if (matcher.find()) {
                 String cmd = matcher.group(1);
                 String pw = matcher.group(2);
-                if (!(cmd.equals("svr_adminpassword") && (pw.equals(server.getPassword())))) {
+                if (!(cmd.equals("svr_adminpassword") && (pw.equals(password)))) {
                     throw new ConnectionException("Password invalid");
                 }
             }
         }
     }
 
-    public String execute(Server server, String command) throws ConnectionException {
+    public String execute(String host, int port, String password, String command) throws ConnectionException {
 
-        return execute(server.getHost(), server.getPort(), server.getPassword(), command);
+        return execute(host, port, password, command);
 
     }
 

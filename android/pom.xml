@@ -21,6 +21,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>at.savage.server.remote</groupId>
+            <artifactId>connector</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
         <defaultGoal>package</defaultGoal>
