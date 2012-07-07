@@ -48,13 +48,13 @@ public class Connector {
         }
     }
 
-    public String execute(String host, int port, String password, String command) throws ConnectionException {
+//    public String execute(String host, int port, String password, String command) throws ConnectionException {
+//
+//        return execute(host, port, password, command);
+//
+//    }
 
-        return execute(host, port, password, command);
-
-    }
-
-    private String execute(String host, Integer port, String password, String command) throws ConnectionException {
+    public String execute(String host, Integer port, String password, String command) throws ConnectionException {
 
         String cookie = cookie(host, port);
         Socket socket = new Socket();
