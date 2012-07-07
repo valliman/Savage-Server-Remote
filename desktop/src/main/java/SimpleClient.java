@@ -1,5 +1,6 @@
 import at.valli.savage.connection.ConnectionException;
 import at.valli.savage.connection.Connector;
+import at.valli.savage.connection.StatefulConnector;
 
 import java.util.Scanner;
 
@@ -10,19 +11,19 @@ import java.util.Scanner;
  */
 public class SimpleClient {
 
-    private Connector connector;
+    private StatefulConnector connector;
     private String host;
     private int port;
     private String password;
 
     public SimpleClient() {
-        connector = Connector.getInstance();
+
     }
 
     public static void main(String[] args) {
 
         if (args.length != 3) {
-            System.out.println("SYNOPSIS: java SimpleClient <host> <port> <password>");
+            System.out.println("SYNOPSIS: java -jar <jar> <host> <port> <password>");
         } else {
 
             SimpleClient app = new SimpleClient();
@@ -38,27 +39,27 @@ public class SimpleClient {
     private void execute() {
         Scanner scanner = null;
         try {
-            connector.connect(host, port, password);
+            connector = new StatefulConnector(host, port, password);
+            connector.connect();
             scanner = new Scanner(System.in);
-            while(scanner.hasNext()) {
+            while (scanner.hasNext()) {
                 String cmd = scanner.nextLine();
-                System.out.println(connector.execute(host, port, password, cmd));
+                System.out.println("EXECUTING: " + cmd);
+                System.out.println(connector.execute(cmd));
             }
         } catch (ConnectionException e) {
             System.err.println(e.getMessage());
         } finally {
-            if(scanner != null) {
+            if (scanner != null) {
                 scanner.close();
             }
+            try {
+                if (connector.isConnected()) {
+                    connector.disconnect();
+                }
+            } catch (ConnectionException ignored) {
+            }
         }
-    }
-
-    public Connector getConnector() {
-        return connector;
-    }
-
-    public void setConnector(Connector connector) {
-        this.connector = connector;
     }
 
     public String getHost() {
