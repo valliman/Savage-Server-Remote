@@ -27,3 +27,4 @@
 /android/target
 /android/gen/at/valli/savage/BuildConfig.java
 *.iml
+/.idea
