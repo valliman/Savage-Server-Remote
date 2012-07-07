@@ -10,27 +10,43 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created 25.03.12 - 15:52
- *
- * @author valli
+ * Copyright Passion Soft OG 2012
+ * Author: Stefan Vallaster
+ * Date: 07.07.12 - 14:55
  */
-public class Connector {
+public class StatefulConnector {
 
-    private static Connector instance;
+    private static final int SOCKET_TIMEOUT = 500;
 
-    private Connector() {
+    private Socket socket;
+    PrintWriter out = null;
+    BufferedReader in = null;
+    private String cookie;
+
+    private String host;
+    private int port;
+    private String password;
+
+    public StatefulConnector(String host, int port, String password) {
+        this.host = host;
+        this.port = port;
+        this.password = password;
     }
 
-    public static Connector getInstance() {
-        if (instance == null) {
-            instance = new Connector();
+
+    public void connect() throws ConnectionException {
+
+        cookie = cookie(host, port);
+        socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            throw new ConnectionException("Connection error", e);
         }
-        return instance;
-    }
 
-    public void connect(String host, int port, String password) throws ConnectionException {
-
-        String response = execute(host, port, password, "svr_adminpassword");
+        String response = execute("svr_adminpassword");
 
         if (response != null) {
             Pattern pattern = Pattern.compile("(.*) is \"(.*)\"");
@@ -40,45 +56,34 @@ public class Connector {
                 String cmd = matcher.group(1);
                 String pw = matcher.group(2);
                 if (!(cmd.equals("svr_adminpassword") && (pw.equals(password)))) {
-                    throw new ConnectionException("Password invalid");
+                    throw new ConnectionException("Password invalid!");
                 }
             }
         }
     }
 
-//    public String execute(String host, int port, String password, String command) throws ConnectionException {
-//
-//        return execute(host, port, password, command);
-//
-//    }
+    public String execute(String command) throws ConnectionException {
 
-    public String execute(String host, Integer port, String password, String command) throws ConnectionException {
+        if (socket != null && socket.isConnected()) {
+            if (cookie != null) {
+                out.write("svcmd" + " " + cookie + " " + password + " " + command);
+                out.flush();
 
-        String cookie = cookie(host, port);
-        Socket socket = new Socket();
-        PrintWriter out = null;
-        BufferedReader in = null;
-
-        try {
-            socket.connect(new InetSocketAddress(host, port), 500);
-            if (socket.isConnected()) {
-                out = new PrintWriter(socket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                if (cookie != null) {
-                    out.write("svcmd" + " " + cookie + " " + password + " " + command);
-                    out.flush();
-
-                    return read(in).trim();
-                } else {
-                    throw new ConnectionException("Cookie malformed!");
-                }
+                return read(in).trim();
             } else {
-                throw new ConnectionException("Connection timeout!");
+                throw new ConnectionException("Cookie malformed!");
             }
-        } catch (IOException e) {
-            throw new ConnectionException("Connection error", e);
-        } finally {
+        } else {
+            throw new ConnectionException("No active connection!");
+        }
+    }
+
+    public boolean isConnected() {
+        return socket != null && socket.isConnected();
+    }
+
+    public void disconnect() throws ConnectionException {
+        if (socket != null && socket.isBound() && socket.isConnected() && !socket.isClosed()) {
             if (out != null) {
                 out.close();
             }
@@ -89,12 +94,10 @@ public class Connector {
                     // ignore
                 }
             }
-            if (socket.isConnected()) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    // ignore
-                }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                throw new ConnectionException(e);
             }
         }
     }
@@ -160,4 +163,5 @@ public class Connector {
             return null;
         }
     }
+
 }
