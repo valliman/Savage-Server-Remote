@@ -1,3 +1,5 @@
+package view;
+
 import javax.swing.*;
 
 /**
@@ -14,4 +16,7 @@ public class Login {
     private JList list1;
     private JButton connectButton;
     private JButton addToFavoritesButton;
+    private JButton removeFromFavoritesButton;
+    private JButton button1;
+    private JButton button2;
 }
