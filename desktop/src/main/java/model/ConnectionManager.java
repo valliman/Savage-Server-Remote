@@ -14,20 +14,20 @@ public class ConnectionManager {
     StatefulConnector connector;
 
     public ConnectionManager(String ip, String port, String password) {
-        connector=new StatefulConnector(ip, Integer.parseInt(port), password);
-        try {
-            connector.connect();
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-        }
+//        connector=new StatefulConnector(ip, Integer.parseInt(port), password);
+//        try {
+////            connector.connect();
+//        } catch (ConnectionException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void destroy() {
-        try {
-            connector.disconnect();
-        } catch (ConnectionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+//        try {
+////            connector.disconnect();
+//        } catch (ConnectionException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
     }
 
     public void set(String name, String value) {

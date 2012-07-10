@@ -18,10 +18,6 @@ public class StatefulConnector {
 
     private static final int SOCKET_TIMEOUT = 500;
 
-    private Socket socket;
-    PrintWriter out = null;
-    BufferedReader in = null;
-    private String cookie;
 
     private String host;
     private int port;
@@ -34,16 +30,36 @@ public class StatefulConnector {
     }
 
 
-    public void connect() throws ConnectionException {
+    public void check() throws ConnectionException {
 
-        cookie = cookie(host, port);
-        socket = new Socket();
+        Socket socket = null;
+        PrintWriter out = null;
+        BufferedReader in = null;
         try {
+            socket = new Socket();
             socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             throw new ConnectionException("Connection error", e);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+            if (socket != null && socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
 
         String response = execute("svr_adminpassword");
@@ -64,26 +80,31 @@ public class StatefulConnector {
 
     public String execute(String command) throws ConnectionException {
 
-        if (socket != null && socket.isConnected()) {
-            if (cookie != null) {
-                out.write("svcmd" + " " + cookie + " " + password + " " + command);
-                out.flush();
+        String cookie = cookie();
+        Socket socket = new Socket();
+        PrintWriter out = null;
+        BufferedReader in = null;
 
-                return read(in).trim();
+        try {
+            socket.connect(new InetSocketAddress(host, port), 500);
+            if (socket.isConnected()) {
+                out = new PrintWriter(socket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                if (cookie != null) {
+                    out.write("svcmd" + " " + cookie + " " + password + " " + command);
+                    out.flush();
+
+                    return read(in).trim();
+                } else {
+                    throw new ConnectionException("Cookie malformed!");
+                }
             } else {
-                throw new ConnectionException("Cookie malformed!");
+                throw new ConnectionException("Connection timeout!");
             }
-        } else {
-            throw new ConnectionException("No active connection!");
-        }
-    }
-
-    public boolean isConnected() {
-        return socket != null && socket.isConnected();
-    }
-
-    public void disconnect() throws ConnectionException {
-        if (socket != null && socket.isBound() && socket.isConnected() && !socket.isClosed()) {
+        } catch (IOException e) {
+            throw new ConnectionException("Connection error", e);
+        } finally {
             if (out != null) {
                 out.close();
             }
@@ -94,15 +115,17 @@ public class StatefulConnector {
                     // ignore
                 }
             }
-            try {
-                socket.close();
-            } catch (IOException e) {
-                throw new ConnectionException(e);
+            if (socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // ignore
+                }
             }
         }
     }
 
-    private String cookie(String host, Integer port) throws ConnectionException {
+    private String cookie() throws ConnectionException {
 
         Socket socket = new Socket();
         PrintWriter out = null;

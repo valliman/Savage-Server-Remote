@@ -1,5 +1,4 @@
 import at.valli.savage.connection.ConnectionException;
-import at.valli.savage.connection.Connector;
 import at.valli.savage.connection.StatefulConnector;
 
 import java.util.Scanner;
@@ -11,7 +10,6 @@ import java.util.Scanner;
  */
 public class SimpleClient {
 
-    private StatefulConnector connector;
     private String host;
     private int port;
     private String password;
@@ -39,8 +37,7 @@ public class SimpleClient {
     private void execute() {
         Scanner scanner = null;
         try {
-            connector = new StatefulConnector(host, port, password);
-            connector.connect();
+            StatefulConnector connector = new StatefulConnector(host, port, password);
             scanner = new Scanner(System.in);
             while (scanner.hasNext()) {
                 String cmd = scanner.nextLine();
@@ -53,33 +50,15 @@ public class SimpleClient {
             if (scanner != null) {
                 scanner.close();
             }
-            try {
-                if (connector.isConnected()) {
-                    connector.disconnect();
-                }
-            } catch (ConnectionException ignored) {
-            }
         }
-    }
-
-    public String getHost() {
-        return host;
     }
 
     public void setHost(String host) {
         this.host = host;
     }
 
-    public int getPort() {
-        return port;
-    }
-
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {

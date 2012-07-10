@@ -30,7 +30,7 @@ public class LoginForm extends JFrame{
     public LoginForm() {
         setTitle("Login");
         setContentPane(contentPane);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         connectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onConnect();
