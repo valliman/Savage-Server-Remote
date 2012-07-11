@@ -5,6 +5,7 @@ import model.ConnectionManager;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +19,7 @@ public class MainForm extends JFrame{
     private JTabbedPane tabbedPane1;
     private JTabbedPane tabbedPane2;
     private JTabbedPane tabbedPane3;
-    private JTextField textField1;
+    private JTextField consoleTextField;
     private JButton consoleSendButton;
     private JComboBox comboBox1;
     private JTable table1;
@@ -35,7 +36,7 @@ public class MainForm extends JFrame{
     private JButton extendTimelimitButton;
     private JButton pauseButton;
     private JButton unpauseButton;
-    private JTextField textField2;
+    private JTextField broadcastMessageTextField;
     private JButton broadcastMessageSendButton;
     private JButton loadMapButton;
     private JButton uploadMapButton;
@@ -208,7 +209,7 @@ public class MainForm extends JFrame{
     private JTextField respawnTimeTextField;
     private JTextField resurrectTimeTextField;
     private JTextField invincibleTimeTextField;
-    private JTextField invincibleTimeRespawnTextField;
+    private JTextField invincibleTimeRespawnFactorTextField;
     private JTextField skillfullKillDistanceTextField;
     private JTextField blockArcMultiplierTextField;
     private JButton advanced2ReloadDataButton;
@@ -250,6 +251,11 @@ public class MainForm extends JFrame{
     private JPanel contentPane;
     private JCheckBox fallingDamageCheckBox;
     private JCheckBox uphillLeapCheckBox;
+    private JPanel mapsImagePanel;
+    private JLabel currentMapTextField;
+    private JLabel nextMapTextField;
+    private JButton reloadDataButton;
+    private JButton reloadDataButton1;
     private ConnectionManager cman;
 
     public MainForm(ConnectionManager cman) {
@@ -271,10 +277,268 @@ public class MainForm extends JFrame{
                 onExtendTime();
             }
         });
+        broadcastMessageSendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onBroadcastMessageSend();
+            }
+        });
+        drawButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDraw();
+            }
+        });
+        restartMatchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onRestartMatch();
+            }
+        });
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPause();
+            }
+        });
+        unpauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onUnpause();
+            }
+        });
+        nextMapButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onNextMap();
+            }
+        });
+        generalApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onGeneralApply();
+            }
+        });
+        generalReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onGeneralReloadData();
+            }
+        });
+        advanced1ApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAdvanced1Apply();
+            }
+        });
+        advanced1ReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAdvanced1ReloadData();
+            }
+        });
+    }
+
+    private void onAdvanced1ReloadData() {
+        String[] names={
+                "sv_readyPercent",
+                "sv_allowWarmupAllSpawnLocs",
+                "sv_allowWarmupInfiniteGold",
+                "svr_voipAllowAnyone",
+                "svr_voipAllowOfficer",
+                "svr_voipAllowCommander",
+                "svr_voipTargetGlobal",
+                "svr_voipTargetTeam",
+                "svr_voipTargetSquad",
+                "svr_voipStreamTime",
+                "svr_voipStreamWait",
+                "g_maxofficers",
+                "g_clientsperofficer",
+                "sv_enablesquads",
+                "sv_autoSquadClients",
+                "sv_autoSquadMinimum",
+                "g_squadminperofficer",
+                "sv_teamSwitchDelay",
+                "sv_teamSwitchConnectFreedom",
+                "sv_respawntime",
+                "sv_ressurectTime",
+                "sv_invincibleTime",
+                "sv_invincibleTime_respawn",
+                "sv_skillfullKillDist",
+                "sv_blockArcMult"
+        };
+        HashMap<String,String> config=cman.get(names);
+        readyPercentTextField.setText(config.get("sv_readyPercent"));
+        if (config.get("sv_allowWarmupAllSpawnLocs").equals("1")) allowSpawningAtAllCheckBox.setSelected(true);
+        else allowSpawningAtAllCheckBox.setSelected(false);
+        if (config.get("sv_allowWarmupInfiniteGold").equals("1")) infiniteGoldAtWarmupCheckBox.setSelected(true);
+        else infiniteGoldAtWarmupCheckBox.setSelected(false);
+        if (config.get("svr_voipAllowAnyone").equals("1")) allowAnyoneCheckBox.setSelected(true);
+        else allowAnyoneCheckBox.setSelected(false);
+        if (config.get("svr_voipAllowOfficer").equals("1")) allowOfficersCheckBox.setSelected(true);
+        else allowOfficersCheckBox.setSelected(false);
+        if (config.get("svr_voipAllowCommander").equals("1")) allowCommandersCheckBox.setSelected(true);
+        else allowCommandersCheckBox.setSelected(false);
+        if (config.get("svr_voipTargetGlobal").equals("1")) allowGlobalVOIPChattingCheckBox.setSelected(true);
+        else allowGlobalVOIPChattingCheckBox.setSelected(false);
+        if (config.get("svr_voipTargetTeam").equals("1")) allowTeamVOIPChattingCheckBox.setSelected(true);
+        else allowTeamVOIPChattingCheckBox.setSelected(false);
+        if (config.get("svr_voipTargetSquad").equals("1")) allowSquadVOIPChattingCheckBox.setSelected(true);
+        else allowSquadVOIPChattingCheckBox.setSelected(false);
+        maxStreamTimeTextField.setText(config.get("svr_voipStreamTime"));
+        streamWaitTimeTextField.setText(config.get("svr_voipStreamWait"));
+        maxOfficerTextField.setText(config.get("g_maxofficers"));
+        clientsPerOfficerTextField.setText(config.get("g_clientsperofficer"));
+        if (config.get("sv_enablesquads").equals("1")) enableSquadsCheckBox.setSelected(true);
+        else enableSquadsCheckBox.setSelected(false);
+        if (config.get("sv_autoSquadClients").equals("1")) squadAutoAssignCheckBox.setSelected(true);
+        else squadAutoAssignCheckBox.setSelected(false);
+        autoSquadMinimumTextField.setText(config.get("sv_autoSquadMinimum"));
+        squadMembersPerSquadOfficerTextField.setText(config.get("g_squadminperofficer"));
+        teamSwitchDelayTextField.setText(config.get("sv_teamSwitchDelay"));
+        teamSwitchFreedomTextField.setText(config.get("sv_teamSwitchConnectFreedom"));
+        respawnTimeTextField.setText(config.get("sv_respawntime"));
+        resurrectTimeTextField.setText(config.get("sv_ressurectTime"));
+        invincibleTimeTextField.setText(config.get("sv_invincibleTime"));
+        invincibleTimeRespawnFactorTextField.setText(config.get("sv_invincibleTime_respawn"));
+        skillfullKillDistanceTextField.setText(config.get("sv_skillfullKillDist"));
+        blockArcMultiplierTextField.setText(config.get("sv_blockArcMult"));
+    }
+
+    private void onAdvanced1Apply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("sv_readyPercent",readyPercentTextField.getText());
+        config.put("sv_allowWarmupAllSpawnLocs",allowSpawningAtAllCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowWarmupInfiniteGold",infiniteGoldAtWarmupCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipAllowAnyone",allowAnyoneCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipAllowOfficer",allowOfficersCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipAllowCommander",allowCommandersCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipTargetGlobal",allowGlobalVOIPChattingCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipTargetTeam",allowTeamVOIPChattingCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipTargetSquad",allowSquadVOIPChattingCheckBox.isSelected()?"1":"0");
+        config.put("svr_voipStreamTime",maxStreamTimeTextField.getText());
+        config.put("svr_voipStreamWait",streamWaitTimeTextField.getText());
+        config.put("g_maxofficers",maxOfficerTextField.getText());
+        config.put("g_clientsperofficer",clientsPerOfficerTextField.getText());
+        config.put("sv_enablesquads",enableSquadsCheckBox.isSelected()?"1":"0");
+        config.put("sv_autoSquadClients",squadAutoAssignCheckBox.isSelected()?"1":"0");
+        config.put("sv_autoSquadMinimum",autoSquadMinimumTextField.getText());
+        config.put("g_squadminperofficer",squadMembersPerSquadOfficerTextField.getText());
+        config.put("sv_teamSwitchDelay",teamSwitchDelayTextField.getText());
+        config.put("sv_teamSwitchConnectFreedom",teamSwitchFreedomTextField.getText());
+        config.put("sv_respawntime",respawnTimeTextField.getText());
+        config.put("sv_ressurectTime",resurrectTimeTextField.getText()); //TODO: Schauen ob Variable nicht sv_resurrectTime stattdessen heißt!
+        config.put("sv_invincibleTime",invincibleTimeTextField.getText());
+        config.put("sv_invincibleTime_respawn",invincibleTimeRespawnFactorTextField.getText());
+        config.put("sv_skillfullKillDist",skillfullKillDistanceTextField.getText());
+        config.put("sv_blockArcMult",blockArcMultiplierTextField.getText());
+        cman.set(config);
+    }
+
+    private void onGeneralReloadData() {
+        String[] names={
+                "svr_name",
+                "sv_serverNotes",
+                "svr_maxclients",
+                "sv_balancedTeams",
+                "svr_broadcast",
+                "sv_sendStatsSEP",
+                "svr_password",
+                "svr_PasswordNoVIP",
+                "svr_adminpassword",
+                "sv_refereePassword",
+                "sv_refGodPassword",
+                "sv_team1race",
+                "sv_team2race",
+                "sv_team3race",
+                "sv_team4race",
+                "sv_team5race",
+                "sv_team6race",
+                "sv_motd1",
+                "sv_motd2",
+                "sv_motd3",
+                "sv_motd4",
+                "sv_motd5",
+                "sv_motd6",
+        };
+        HashMap<String,String> config=cman.get(names);
+        serverNameTextField.setText(config.get("svr_name"));
+        serverNotesTextField.setText(config.get("sv_serverNotes"));
+        maxPlayersTextField.setText(config.get("svr_maxclients"));
+        if (config.get("sv_balancedTeams").equals("1")) balancedTeamsCheckBox.setSelected(true);
+        else balancedTeamsCheckBox.setSelected(false);
+        if (config.get("svr_broadcast").equals("1")) broadcastServerCheckBox.setSelected(true);
+        else broadcastServerCheckBox.setSelected(false);
+        if (config.get("sv_sendStatsSEP").equals("1")) sendStatsCheckBox.setSelected(true);
+        else sendStatsCheckBox.setSelected(false);
+        joinPasswordTextField.setText(config.get("svr_password"));
+        adminPasswordTextField.setText(config.get("svr_adminpassword"));
+        refereePasswordTextField.setText(config.get("sv_refereePassword"));
+        godRefPasswordTextField.setText("sv_refGodPassword");
+        if (config.get("sv_team1race").equals("beast")) team1ComboBox.setSelectedIndex(0);
+        else team1ComboBox.setSelectedIndex(1);
+        if (config.get("sv_team2race").equals("beast")) team2ComboBox.setSelectedIndex(0);
+        else team2ComboBox.setSelectedIndex(1);
+        if (config.get("sv_team3race").equals("beast")) team3ComboBox.setSelectedIndex(0);
+        else team3ComboBox.setSelectedIndex(1);
+        if (config.get("sv_team4race").equals("beast")) team4ComboBox.setSelectedIndex(0);
+        else team4ComboBox.setSelectedIndex(1);
+        motd1TextField.setText(config.get("sv_motd1"));
+        motd2TextField.setText(config.get("sv_motd2"));
+        motd3TextField.setText(config.get("sv_motd3"));
+        motd4TextField.setText(config.get("sv_motd4"));
+        motd5TextField.setText(config.get("sv_motd5"));
+        motd6TextField.setText(config.get("sv_motd6"));
+    }
+
+    private void onGeneralApply() {
+        HashMap<String,String> config=new HashMap<String,String>();
+        config.put("svr_name",serverNameTextField.getText());
+        config.put("sv_serverNotes",serverNotesTextField.getText());
+        config.put("svr_maxclients",maxPlayersTextField.getText());
+        config.put("sv_balancedTeams",balancedTeamsCheckBox.isSelected()?"1":"0");
+        config.put("svr_broadcast",broadcastServerCheckBox.isSelected()?"1":"0");
+        config.put("sv_sendStatsSEP",sendStatsCheckBox.isSelected()?"1":"0");
+        config.put("svr_password",joinPasswordTextField.getText());
+        config.put("svr_PasswordNoVIP",joinPasswordTextField.getText());
+        config.put("svr_adminpassword",adminPasswordTextField.getText());
+        config.put("sv_refereePassword",refereePasswordTextField.getText());
+        config.put("sv_refGodPassword",godRefPasswordTextField.getText());
+        if (team1ComboBox.getSelectedIndex()==0) config.put("sv_team1race","beast");
+        else config.put("sv_team1race","human");
+        if (team2ComboBox.getSelectedIndex()==0) config.put("sv_team2race","beast");
+        else config.put("sv_team2race","human");
+        if (team3ComboBox.getSelectedIndex()==0) config.put("sv_team3race","beast");
+        else config.put("sv_team3race","human");
+        if (team4ComboBox.getSelectedIndex()==0) config.put("sv_team4race","beast");
+        else config.put("sv_team4race","human");
+        config.put("sv_motd1",motd1TextField.getText());
+        config.put("sv_motd2",motd2TextField.getText());
+        config.put("sv_motd3",motd3TextField.getText());
+        config.put("sv_motd4",motd4TextField.getText());
+        config.put("sv_motd5",motd5TextField.getText());
+        config.put("sv_motd6",motd6TextField.getText());
+        cman.set(config);
+    }
+
+    private void onNextMap() {
+        cman.execute("nextmap");
+    }
+
+    private void onUnpause() {
+        cman.execute("unpause");
+    }
+
+    private void onPause() {
+        cman.execute("pause");
+    }
+
+    private void onRestartMatch() {
+        cman.execute("restartmatch");
     }
 
     private void onLogOut() {
-        cman.destroy();
+        cman=null;
         dispose();
         new LoginForm();
     }
@@ -283,7 +547,11 @@ public class MainForm extends JFrame{
        cman.execute("time");
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+    private void onDraw() {
+        cman.execute("draw");
+    }
+
+    private void onBroadcastMessageSend() {
+        cman.execute("svchat \""+broadcastMessageTextField.getText()+"\"");
     }
 }
