@@ -3,6 +3,8 @@ package view;
 import model.ConnectionManager;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -226,7 +228,7 @@ public class MainForm extends JFrame{
     private JTextField maintainBuildingHPCostTextField;
     private JCheckBox preventRelocExploitsCheckBox;
     private JCheckBox allowItemDropActionCheckBox;
-    private JCheckBox allowItemDropOnCheckBox;
+    private JCheckBox allowItemDropOnDeathCheckBox;
     private JCheckBox allowToPickupEnemyCheckBox;
     private JTextField minLandmineDistanceTextField;
     private JTextField bouncingProjectileRestVelocityTextField;
@@ -239,8 +241,6 @@ public class MainForm extends JFrame{
     private JCheckBox allowSiegeTeamDamageCheckBox;
     private JCheckBox allowTowerTeamDamageCheckBox;
     private JTextField teamDamagePercentTextField;
-    private JRadioButton recordDemosRadioButton;
-    private JRadioButton replayDemosRadioButton;
     private JCheckBox allowDemoListingCheckBox;
     private JTextField replayFolderTextField;
     private JTextField demoFolderTextField;
@@ -256,6 +256,9 @@ public class MainForm extends JFrame{
     private JLabel nextMapTextField;
     private JButton reloadDataButton;
     private JButton reloadDataButton1;
+    private JCheckBox allowItemTeamDamageCheckBox;
+    private JCheckBox replayDemosCheckBox;
+    private JCheckBox recordDemosCheckBox;
     private ConnectionManager cman;
 
     public MainForm(ConnectionManager cman) {
@@ -337,6 +340,173 @@ public class MainForm extends JFrame{
                 onAdvanced1ReloadData();
             }
         });
+        advanced2ApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAdvanced2Apply();
+            }
+        });
+        recordDemosCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onRecordDemos();
+            }
+        });
+        replayDemosCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onReplayDemos();
+            }
+        });
+        advanced2ReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAdvanced2ReloadData();
+            }
+        });
+        allowTeamDamageCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onTeamDamage();
+            }
+        });
+    }
+
+    private void onTeamDamage() {
+        if (allowTeamDamageCheckBox.isSelected()) {
+            allowMeleeTeamDamageCheckBox.setEnabled(true);
+            allowWeaponTeamDamageCheckBox.setEnabled(true);
+            allowSiegeTeamDamageCheckBox.setEnabled(true);
+            allowTowerTeamDamageCheckBox.setEnabled(true);
+            allowItemTeamDamageCheckBox.setEnabled(true);
+        }
+        else {
+            allowMeleeTeamDamageCheckBox.setEnabled(false);
+            allowWeaponTeamDamageCheckBox.setEnabled(false);
+            allowSiegeTeamDamageCheckBox.setEnabled(false);
+            allowTowerTeamDamageCheckBox.setEnabled(false);
+            allowItemTeamDamageCheckBox.setEnabled(false);
+        }
+
+    }
+
+    private void onReplayDemos() {
+        if (replayDemosCheckBox.isSelected()) recordDemosCheckBox.setSelected(false);
+    }
+
+    private void onRecordDemos() {
+        if (recordDemosCheckBox.isSelected()) replayDemosCheckBox.setSelected(false);
+    }
+
+    private void onAdvanced2ReloadData() {
+        String[] names={
+            "sv_placebuildingtestscale",
+            "sv_claimableBuildings",
+            "sv_minClaimInterval",
+            "sv_repairCost",
+            "sv_repairMult",
+            "sv_buildingDmgScale",
+            "sv_overtime_decay",
+            "sv_zeroRelocVelocity",
+            "sv_landminedistance",
+            "sv_projRestVelocity",
+            "sv_projRestSlope",
+            "sv_allowItemDropAction",
+            "sv_allowItemDropDeath",
+            "sv_allowItemPickEnemy",
+            "sv_itemDropDuration",
+            "sv_itemPickDistance",
+            "sv_teamDamage",
+            "sv_teamMeleeDamage",
+            "sv_teamWeaponDamage",
+            "sv_teamSiegeDamage",
+            "sv_teamBuildingDamage",
+            "sv_teamItemDamage",
+            "sv_teamDamagePercent",
+            "serverdemos_recordserver",
+            "serverdemos_replayserver",
+            "sv_allowlistdemos",
+            "serverdemos_dir",
+            "serverdemos_savedir"
+        };
+        HashMap<String,String> config=cman.get(names);
+        buildingTestScaleTextField.setText(config.get("sv_placebuildingtestscale"));
+        if (config.get("sv_claimableBuildings").equals("1")) claimableBuildingsCheckBox.setSelected(true);
+        else claimableBuildingsCheckBox.setSelected(false);
+        minClaimIntervalTextField.setText(config.get("sv_minClaimInterval"));
+        if (config.get("sv_repairCost").equals("1")) repairCostsCheckBox.setSelected(true);
+        else repairCostsCheckBox.setSelected(false);
+        repairCostFactorTextField.setText(config.get("sv_repairMult"));
+        buildingDamageRateTextField.setText(config.get("sv_buildingDmgScale"));
+        if (config.get("sv_overtime_decay").equals("1")) overtimeDecayCheckBox.setSelected(true);
+        else overtimeDecayCheckBox.setSelected(false);
+        if (config.get("sv_zeroRelocVelocity").equals("1")) preventRelocExploitsCheckBox.setSelected(true);
+        else preventRelocExploitsCheckBox.setSelected(false);
+        minLandmineDistanceTextField.setText(config.get("sv_landminedistance"));
+        bouncingProjectileRestVelocityTextField.setText(config.get("sv_projRestVelocity"));
+        bouncingProjectileRestSlopeTextField.setText(config.get("sv_projRestSlope"));
+        if (config.get("sv_allowItemDropAction").equals("1")) allowItemDropActionCheckBox.setSelected(true);
+        else allowItemDropActionCheckBox.setSelected(false);
+        if (config.get("sv_allowItemDropDeath").equals("1")) allowItemDropOnDeathCheckBox.setSelected(true);
+        else allowItemDropOnDeathCheckBox.setSelected(false);
+        if (config.get("sv_allowItemPickEnemy").equals("1")) allowToPickupEnemyCheckBox.setSelected(true);
+        else allowToPickupEnemyCheckBox.setSelected(false);
+        droppedItemExpiryTimeTextField.setText(config.get("sv_itemDropDuration"));
+        droppedItemPickupDistanceTextField.setText(config.get("sv_itemPickDistance"));
+        if (config.get("sv_teamDamage").equals("1")) allowTeamDamageCheckBox.setSelected(true);
+        else allowTeamDamageCheckBox.setSelected(false);
+        if (config.get("sv_teamMeleeDamage").equals("1")) allowMeleeTeamDamageCheckBox.setSelected(true);
+        else allowMeleeTeamDamageCheckBox.setSelected(false);
+        if (config.get("sv_teamWeaponDamage").equals("1")) allowWeaponTeamDamageCheckBox.setSelected(true);
+        else allowWeaponTeamDamageCheckBox.setSelected(false);
+        if (config.get("sv_teamSiegeDamage").equals("1")) allowSiegeTeamDamageCheckBox.setSelected(true);
+        else allowSiegeTeamDamageCheckBox.setSelected(false);
+        if (config.get("sv_teamBuildingDamage").equals("1")) allowTowerTeamDamageCheckBox.setSelected(true);
+        else allowTowerTeamDamageCheckBox.setSelected(false);
+        if (config.get("sv_teamItemDamage").equals("1")) allowItemTeamDamageCheckBox.setSelected(true);
+        else allowItemTeamDamageCheckBox.setSelected(false);
+        teamDamagePercentTextField.setText(config.get("sv_teamDamagePercent"));
+        if (config.get("serverdemos_recordserver").equals("1")) recordDemosCheckBox.setSelected(true);
+        else recordDemosCheckBox.setSelected(false);
+        if (config.get("serverdemos_replayserver").equals("1")) replayDemosCheckBox.setSelected(true);
+        else replayDemosCheckBox.setSelected(false);
+        if (config.get("sv_allowlistdemos").equals("1")) allowDemoListingCheckBox.setSelected(true);
+        else allowDemoListingCheckBox.setSelected(false);
+        replayFolderTextField.setText(config.get("serverdemos_dir"));
+        demoFolderTextField.setText(config.get("serverdemos_savedir"));
+    }
+
+    private void onAdvanced2Apply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("sv_placebuildingtestscale",buildingTestScaleTextField.getText());
+        config.put("sv_claimableBuildings",claimableBuildingsCheckBox.isSelected()?"1":"0");
+        config.put("sv_minClaimInterval",minClaimIntervalTextField.getText());
+        config.put("sv_repairCost",repairCostsCheckBox.isSelected()?"1":"0");
+        config.put("sv_repairMult",repairCostFactorTextField.getText());
+        config.put("sv_buildingDmgScale",buildingDamageRateTextField.getText());
+        config.put("sv_overtime_decay",overtimeDecayCheckBox.isSelected()?"1":"0");
+        config.put("sv_zeroRelocVelocity",preventRelocExploitsCheckBox.isSelected()?"1":"0");
+        config.put("sv_landminedistance",minLandmineDistanceTextField.getText());
+        config.put("sv_projRestVelocity",bouncingProjectileRestVelocityTextField.getText());
+        config.put("sv_projRestSlope",bouncingProjectileRestSlopeTextField.getText());
+        config.put("sv_allowItemDropAction",allowItemDropActionCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowItemDropDeath",allowItemDropOnDeathCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowItemPickEnemy",allowToPickupEnemyCheckBox.isSelected()?"1":"0");
+        config.put("sv_itemDropDuration",droppedItemExpiryTimeTextField.getText());
+        config.put("sv_itemPickDistance",droppedItemPickupDistanceTextField.getText());
+        config.put("sv_teamDamage",allowTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamMeleeDamage",allowMeleeTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamWeaponDamage",allowWeaponTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamSiegeDamage",allowSiegeTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamBuildingDamage",allowTowerTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamItemDamage",allowItemTeamDamageCheckBox.isSelected()?"1":"0");
+        config.put("sv_teamDamagePercent",teamDamagePercentTextField.getText());
+        config.put("serverdemos_recordserver",recordDemosCheckBox.isSelected()?"1":"0");
+        config.put("serverdemos_replayserver",replayDemosCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowlistdemos",allowDemoListingCheckBox.isSelected()?"1":"0");
+        config.put("serverdemos_dir",replayFolderTextField.getText());
+        config.put("serverdemos_savedir",demoFolderTextField.getText());
+        cman.set(config);
     }
 
     private void onAdvanced1ReloadData() {
