@@ -7,6 +7,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 /**
@@ -74,7 +76,6 @@ public class MainForm extends JFrame{
     private JTextField gravityTextField;
     private JTextField frictionTextField;
     private JTextField airControlTextField;
-    private JTextField sprintBurstTextField;
     private JTextField sprintSpeedTextField;
     private JTextField stepHeightTextField;
     private JTextField jumpHeightTextField;
@@ -99,7 +100,7 @@ public class MainForm extends JFrame{
     private JTextField grabRangeTextField;
     private JTextField throwForceTextField;
     private JTextField quakeMultiplierTextField;
-    private JCheckBox allowVotingCheckBox;
+    private JCheckBox disableVotingCheckBox;
     private JCheckBox concedeVotesCheckBox;
     private JCheckBox drawVotesCheckBox;
     private JCheckBox electVotesCheckBox;
@@ -259,6 +260,9 @@ public class MainForm extends JFrame{
     private JCheckBox allowItemTeamDamageCheckBox;
     private JCheckBox replayDemosCheckBox;
     private JCheckBox recordDemosCheckBox;
+    private JCheckBox modVotesCheckBox;
+    private JCheckBox sprintBurstCheckBox;
+    private JTextArea consoleTextArea;
     private ConnectionManager cman;
 
     public MainForm(ConnectionManager cman) {
@@ -370,6 +374,584 @@ public class MainForm extends JFrame{
                 onTeamDamage();
             }
         });
+        votesApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onVotesApply();
+            }
+        });
+        disableVotingCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onDisableVotes();
+            }
+        });
+        votesReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onVotesReloadData();
+            }
+        });
+        resourcesApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onResourcesApply();
+            }
+        });
+        enableGoodieBagsCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                enableGoodieBags();
+            }
+        });
+        resourcesReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onResourcesReloadData();
+            }
+        });
+        experienceApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onExperienceApply();
+            }
+        });
+        experienceReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onExperienceReloadData();
+            }
+        });
+        fallingDamageCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onFallingDamage();
+            }
+        });
+        uphillLeapCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onUphillLeap();
+            }
+        });
+        allowItemDropActionCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onAllowItemDropAction();
+            }
+        });
+        repairCostsCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onRepairCosts();
+            }
+        });
+        enableSquadsCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                onEnableSquads();
+            }
+        });
+        physicsApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPhysicsApply();
+            }
+        });
+        physicsReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPhysicsReloadData();
+            }
+        });
+        consoleSendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onConsoleSend();
+            }
+        });
+        consoleTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                    onConsoleSend();
+                }
+            }
+        });
+    }
+
+    private void onConsoleSend() {
+        consoleTextArea.setText("> " + consoleTextField.getText() + "\n" + cman.execute(consoleTextField.getText()));
+        consoleTextField.setText("");
+    }
+
+    private void onPhysicsReloadData() {
+        String[] names={
+            "p_specspeed",
+            "p_freeflyAccel",
+            "p_speed",
+            "p_gravity",
+            "p_groundfriction",
+            "p_aircontrol",
+            "p_sprintBurst",
+            "p_sprintSpeed",
+            "p_stepheight",
+            "p_jumpheight",
+            "p_jumpStaminaCost",
+            "p_dodgestaminacost",
+            "p_staminaDepleteSpeed",
+            "p_sprintregenslow",
+            "p_sprintRegenFast",
+            "p_sprintDeadZone",
+            "p_sprintRegainDelay",
+            "p_sprintRegainLandDelay",
+            "p_maxBlockTime",
+            "p_slowWeaponAttack",
+            "p_attackingSpeed",
+            "p_minslope",
+            "p_fallingDamage",
+            "p_minfallDamage",
+            "sv_maxpush",
+            "p_leapUphill",
+            "p_leapUphillTime",
+            "p_pushRange",
+            "p_pushForce",
+            "p_grabRange",
+            "p_throwForce",
+            "sv_quakeMultiplyer"
+        };
+        HashMap<String,String> config=cman.get(names);
+        specSpeedTextField.setText(config.get("p_specspeed"));
+        specAccelerationTextField.setText(config.get("p_freeflyAccel"));
+        playerSpeedTextField.setText(config.get("p_speed"));
+        gravityTextField.setText(config.get("p_gravity"));
+        frictionTextField.setText(config.get("p_groundfriction"));
+        airControlTextField.setText(config.get("p_aircontrol"));
+        if (config.get("p_sprintBurst").equals("1")) sprintBurstCheckBox.setSelected(true);
+        else sprintBurstCheckBox.setSelected(false);
+        sprintSpeedTextField.setText(config.get("p_sprintSpeed"));
+        stepHeightTextField.setText(config.get("p_stepheight"));
+        jumpHeightTextField.setText(config.get("p_jumpheight"));
+        jumpStaminaCostTextField.setText(config.get("p_jumpStaminaCost"));
+        leapStaminaCostTextField.setText(config.get("p_dodgestaminacost"));
+        staminaDepleteSpeedTextField.setText(config.get("p_staminaDepleteSpeed"));
+        sprintRegenSlowTextField.setText(config.get("p_sprintregenslow"));
+        sprintRegenFastTextField.setText(config.get("p_sprintRegenFast"));
+        sprintDeadZoneTextField.setText(config.get("p_sprintDeadZone"));
+        sprintRegainDelayTextField.setText(config.get("p_sprintRegainDelay"));
+        sprintRegainLandDelayTextField.setText(config.get("p_sprintRegainLandDelay"));
+        maxBlockTimeTextField.setText(config.get("p_maxBlockTime"));
+        blockSpeedTextField.setText(config.get("p_blockSpeed"));
+        slowWeaponAttackTextField.setText(config.get("p_slowWeaponAttack"));
+        attackingSpeedTextField.setText(config.get("p_attackingSpeed"));
+        minSlopeTextField.setText(config.get("p_minslope"));
+        if (config.get("p_fallingDamage").equals("1")) fallingDamageCheckBox.setSelected(true);
+        else fallingDamageCheckBox.setSelected(false);
+        minFallDamage.setText(config.get("p_minFallDamage"));
+        maxPushTextField.setText(config.get("sv_maxpush"));
+        if (config.get("p_leapUphill").equals("1")) uphillLeapCheckBox.setSelected(true);
+        else uphillLeapCheckBox.setSelected(false);
+        uphillLeapTimeTextField.setText(config.get("p_leapUphillTime"));
+        pushRangeTextField.setText(config.get("p_pushRange"));
+        pushForceTextField.setText(config.get("p_pushForce"));
+        grabRangeTextField.setText(config.get("p_grabRange"));
+        throwForceTextField.setText(config.get("p_throwForce"));
+        quakeMultiplierTextField.setText(config.get("sv_quakeMultiplyer"));
+    }
+
+    private void onPhysicsApply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("p_specspeed",specSpeedTextField.getText());
+        config.put("p_freeflyAccel",specAccelerationTextField.getText());
+        config.put("p_speed",playerSpeedTextField.getText());
+        config.put("p_gravity",gravityTextField.getText());
+        config.put("p_groundfriction",frictionTextField.getText());
+        config.put("p_aircontrol",airControlTextField.getText());
+        config.put("p_sprintBurst",sprintBurstCheckBox.isSelected()?"1":"0");
+        config.put("p_sprintSpeed",sprintSpeedTextField.getText());
+        config.put("p_stepheight",stepHeightTextField.getText());
+        config.put("p_jumpheight",jumpHeightTextField.getText());
+        config.put("p_jumpStaminaCost",jumpStaminaCostTextField.getText());
+        config.put("p_dodgestaminacost",leapStaminaCostTextField.getText());
+        config.put("p_staminaDepleteSpeed",staminaDepleteSpeedTextField.getText());
+        config.put("p_sprintregenslow",sprintRegenSlowTextField.getText());
+        config.put("p_sprintRegenFast",sprintRegenFastTextField.getText());
+        config.put("p_sprintDeadZone",sprintDeadZoneTextField.getText());
+        config.put("p_sprintRegainDelay",sprintRegainDelayTextField.getText());
+        config.put("p_sprintRegainLandDelay",sprintRegainLandDelayTextField.getText());
+        config.put("p_maxBlockTime",maxBlockTimeTextField.getText());
+        config.put("p_blockSpeed",blockSpeedTextField.getText());
+        config.put("p_slowWeaponAttack",slowWeaponAttackTextField.getText());
+        config.put("p_attackingSpeed",attackingSpeedTextField.getText());
+        config.put("p_minslope",minSlopeTextField.getText());
+        config.put("p_fallingDamage",fallingDamageCheckBox.isSelected()?"1":"0");
+        config.put("p_minfallDamage",minFallDamage.getText());
+        config.put("sv_maxpush",maxPushTextField.getText());
+        config.put("p_leapUphill",uphillLeapCheckBox.isSelected()?"1":"0");
+        config.put("p_leapUphillTime",uphillLeapTimeTextField.getText());
+        config.put("p_pushRange",pushRangeTextField.getText());
+        config.put("p_pushForce",pushForceTextField.getText());
+        config.put("p_grabRange",grabRangeTextField.getText());
+        config.put("p_throwForce",throwForceTextField.getText());
+        config.put("sv_quakeMultiplyer",quakeMultiplierTextField.getText());
+        cman.set(config);
+    }
+
+    private void onEnableSquads() {
+        if (enableSquadsCheckBox.isSelected()) {
+            squadAutoAssignCheckBox.setEnabled(true);
+            autoSquadMinimumTextField.setEditable(true);
+            squadMembersPerSquadOfficerTextField.setEditable(true);
+        }
+        else {
+            squadAutoAssignCheckBox.setEnabled(false);
+            autoSquadMinimumTextField.setEditable(false);
+            squadMembersPerSquadOfficerTextField.setEditable(false);
+        }
+    }
+
+    private void onRepairCosts() {
+        if (repairCostsCheckBox.isSelected()) repairCostFactorTextField.setEditable(true);
+        else repairCostFactorTextField.setEditable(false);
+    }
+
+    private void onAllowItemDropAction() {
+        if (allowItemDropActionCheckBox.isSelected()) {
+            allowItemDropOnDeathCheckBox.setEnabled(true);
+            allowToPickupEnemyCheckBox.setEnabled(true);
+            droppedItemExpiryTimeTextField.setEditable(true);
+            droppedItemPickupDistanceTextField.setEditable(true);
+        }
+        else {
+            allowItemDropOnDeathCheckBox.setEnabled(false);
+            allowToPickupEnemyCheckBox.setEnabled(false);
+            droppedItemExpiryTimeTextField.setEditable(false);
+            droppedItemPickupDistanceTextField.setEditable(false);
+        }
+    }
+
+    private void onUphillLeap() {
+        if (uphillLeapCheckBox.isSelected()) uphillLeapTimeTextField.setEditable(true);
+        else uphillLeapTimeTextField.setEditable(true);
+    }
+
+    private void onFallingDamage() {
+        if (fallingDamageCheckBox.isSelected()) minFallDamage.setEditable(false);
+        else minFallDamage.setEditable(false);
+    }
+
+    private void onExperienceReloadData() {
+        String[] names={
+            "sv_xp_mult",
+            "sv_xp_connect",
+            "sv_xp_build",
+            "sv_xp_repair",
+            "sv_xp_mine",
+            "sv_xp_kill_npc",
+            "sv_xp_kill_worker",
+            "sv_xp_kill_player",
+            "sv_xp_kill_siege",
+            "sv_xp_kill_item",
+            "sv_xp_structure_damage",
+            "sv_xp_raze",
+            "sv_xp_heal_player",
+            "sv_xp_revive_player",
+            "sv_xp_honor",
+            "sv_xp_skill",
+            "sv_xp_hero",
+            "sv_xp_legend",
+            "sv_xp_commander_order_given",
+            "sv_xp_commander_order_followed",
+            "sv_xp_commander_gather",
+            "sv_xp_commander_powerup_given",
+            "sv_xp_commander_structure",
+            "sv_xp_commander_research",
+            "sv_xp_commander_raze"
+        };
+        HashMap<String,String> config=cman.get(names);
+        xpMultiplierTextField.setText(config.get("sv_xp_mult"));
+        xpOnConnectTextField.setText(config.get("sv_xp_connect"));
+        playerBuildTextField.setText(config.get("sv_xp_build"));
+        repairTextField.setText(config.get("sv_xp_repair"));
+        mineTextField.setText(config.get("sv_xp_mine"));
+        killNPCTextField.setText(config.get("sv_xp_kill_npc"));
+        killWorkerTextField.setText(config.get("sv_xp_kill_worker"));
+        killPlayerTextField.setText(config.get("sv_xp_kill_player"));
+        killSiegeTextField.setText(config.get("sv_xp_kill_siege"));
+        killItemTextField.setText(config.get("sv_xp_kill_item"));
+        hitBuildingTextField.setText(config.get("sv_xp_structure_damage"));
+        lastHitOnBuildingTextField.setText(config.get("sv_xp_raze"));
+        healPlayerTextField.setText(config.get("sv_xp_heal_player"));
+        revivePlayerTextField.setText(config.get("sv_xp_revive_player"));
+        honorTextField.setText(config.get("sv_xp_honor"));
+        skillTextField.setText(config.get("sv_xp_skill"));
+        heroTextField.setText(config.get("sv_xp_hero"));
+        legendTextField.setText(config.get("sv_xp_legend"));
+        orderGivenTextField.setText(config.get("sv_xp_commander_order_given"));
+        orderFollowedTextField.setText(config.get("sv_xp_commander_order_followed"));
+        resourcesGatheredTextField.setText(config.get("sv_xp_commander_gather"));
+        powerupGivenTextField.setText(config.get("sv_xp_commander_powerup_given"));
+        commanderBuildTextField.setText(config.get("sv_xp_commander_structure"));
+        researchTextField.setText(config.get("sv_xp_commander_research"));
+        destroyEnemyBuildingTextField.setText(config.get("sv_xp_commander_raze"));
+    }
+
+    private void onExperienceApply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("sv_xp_mult",xpMultiplierTextField.getText());
+        config.put("sv_xp_connect",xpOnConnectTextField.getText());
+        config.put("sv_xp_build",playerBuildTextField.getText());
+        config.put("sv_xp_repair",repairTextField.getText());
+        config.put("sv_xp_mine",mineTextField.getText());
+        config.put("sv_xp_kill_npc",killNPCTextField.getText());
+        config.put("sv_xp_kill_worker",killWorkerTextField.getText());
+        config.put("sv_xp_kill_player",killPlayerTextField.getText());
+        config.put("sv_xp_kill_siege",killSiegeTextField.getText());
+        config.put("sv_xp_kill_item",killItemTextField.getText());
+        config.put("sv_xp_structure_damage",hitBuildingTextField.getText());
+        config.put("sv_xp_raze",lastHitOnBuildingTextField.getText());
+        config.put("sv_xp_heal_player",healPlayerTextField.getText());
+        config.put("sv_xp_revive_player",revivePlayerTextField.getText());
+        config.put("sv_xp_honor",honorTextField.getText());
+        config.put("sv_xp_skill",skillTextField.getText());
+        config.put("sv_xp_hero",heroTextField.getText());
+        config.put("sv_xp_legend",legendTextField.getText());
+        config.put("sv_xp_commander_order_given",orderGivenTextField.getText());
+        config.put("sv_xp_commander_order_followed",orderFollowedTextField.getText());
+        config.put("sv_xp_commander_gather",resourcesGatheredTextField.getText());
+        config.put("sv_xp_commander_powerup_given",powerupGivenTextField.getText());
+        config.put("sv_xp_commander_structure",commanderBuildTextField.getText());
+        config.put("sv_xp_commander_research",researchTextField.getText());
+        config.put("sv_xp_commander_raze",destroyEnemyBuildingTextField.getText());
+        cman.set(config);
+    }
+
+    private void onResourcesReloadData() {
+        String[] names={
+            "sv_startingTeamStone",
+            "sv_startingTeamGold",
+            "sv_clientConnectMoney",
+            "sv_maxMoney",
+            "sv_reviveMoneyReward",
+            "sv_ignoreMoney",
+            "sv_goodieBags",
+            "sv_goodiesForAll",
+            "sv_goodieDuration",
+            "sv_goodieMeOnlyTime",
+            "sv_goodieMaxMoney",
+            "sv_goodieBigMoneyChance",
+            "sv_goodieAmmoChance",
+            "sv_allowWorkAnims",
+            "sv_mineDepletion",
+            "sv_enableTithe"
+        };
+        HashMap<String,String> config=cman.get(names);
+        startingStoneTextField.setText(config.get("sv_startingTeamStone"));
+        startingGoldTextField.setText(config.get("sv_startingTeamGold"));
+        connectMoneyTextField.setText(config.get("sv_clientConnectMoney"));
+        maxMoneyTextField.setText(config.get("sv_maxMoney"));
+        reviveMoneyRewardTextField.setText(config.get("sv_reviveMoneyReward"));
+        if (config.get("sv_ignoreMoney").equals("1")) buyStuffForFreeCheckBox.setSelected(true);
+        else buyStuffForFreeCheckBox.setSelected(false);
+        if (config.get("sv_goodieBags").equals("1")) enableGoodieBagsCheckBox.setSelected(true);
+        else enableGoodieBagsCheckBox.setSelected(false);
+        allowPickupComboBox.setSelectedIndex(Integer.parseInt(config.get("sv_goodiesForAll")));
+        durationTextField.setText(config.get("sv_goodieDuration"));
+        playerOnlyTimeTextField.setText(config.get("sv_goodieMeOnlyTime"));
+        maxValueTextField.setText(config.get("sv_goodieMaxMoney"));
+        jackpotChanceTextField.setText(config.get("sv_goodieBigMoneyChance"));
+        ammoChanceTextField.setText(config.get("sv_goodieAmmoChance"));
+        if (config.get("sv_allowWorkAnims").equals("1")) allowWorkAnimationsCheckBox.setSelected(true);
+        else allowWorkAnimationsCheckBox.setSelected(false);
+        if (config.get("sv_mineDepletion").equals("1")) allowMineDepletionCheckBox.setSelected(true);
+        else allowMineDepletionCheckBox.setSelected(false);
+        if (config.get("sv_enableTithe").equals("1")) allowTaxChangeCheckBox.setSelected(true);
+        else allowTaxChangeCheckBox.setSelected(false);
+    }
+
+    private void onResourcesApply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("sv_startingTeamStone",startingStoneTextField.getText());
+        config.put("sv_startingTeamGold",startingGoldTextField.getText());
+        config.put("sv_clientConnectMoney",connectMoneyTextField.getText());
+        config.put("sv_maxMoney",maxMoneyTextField.getText());
+        config.put("sv_reviveMoneyReward",reviveMoneyRewardTextField.getText());
+        config.put("sv_ignoreMoney",buyStuffForFreeCheckBox.isSelected()?"1":"0");
+        config.put("sv_goodieBags",enableGoodieBagsCheckBox.getText());
+        config.put("sv_goodiesForAll",""+allowPickupComboBox.getSelectedIndex());
+        config.put("sv_goodieDuration",durationTextField.getText());
+        config.put("sv_goodieMeOnlyTime",playerOnlyTimeTextField.getText());
+        config.put("sv_goodieMaxMoney",maxValueTextField.getText());
+        config.put("sv_goodieBigMoneyChance",jackpotChanceTextField.getText());
+        config.put("sv_goodieAmmoChance",ammoChanceTextField.getText());
+        config.put("sv_allowWorkAnims",allowWorkAnimationsCheckBox.isSelected()?"1":"0");
+        config.put("sv_mineDepletion",allowMineDepletionCheckBox.isSelected()?"1":"0");
+        config.put("sv_enableTithe",allowTaxChangeCheckBox.isSelected()?"1":"0");
+        cman.set(config);
+    }
+
+    private void enableGoodieBags() {
+        if (enableGoodieBagsCheckBox.isSelected()) {
+            allowPickupComboBox.setEnabled(true);
+            durationTextField.setEditable(true);
+            playerOnlyTimeTextField.setEditable(true);
+        }
+        else {
+            allowPickupComboBox.setEnabled(false);
+            durationTextField.setEditable(false);
+            playerOnlyTimeTextField.setEditable(false);
+        }
+    }
+
+    private void onDisableVotes() {
+        if (disableVotingCheckBox.isSelected()) {
+            voteDurationTextField.setEditable(false);
+            minVotePercentTextField.setEditable(false);
+            forceCommanderPlayerLimitTextField.setEditable(false);
+            concedeVotesCheckBox.setEnabled(false);
+            drawVotesCheckBox.setEnabled(false);
+            electVotesCheckBox.setEnabled(false);
+            impeachVotesCheckBox.setEnabled(false);
+            kickVotesCheckBox.setEnabled(false);
+            mapVotesCheckBox.setEnabled(false);
+            messageVotesCheckBox.setEnabled(false);
+            muteVotesCheckBox.setEnabled(false);
+            nextMapVotesCheckBox.setEnabled(false);
+            modVotesCheckBox.setEnabled(false);
+            pauseVotesCheckBox.setEnabled(false);
+            unpauseVotesCheckBox.setEnabled(false);
+            raceVotesCheckBox.setEnabled(false);
+            refVotesCheckBox.setEnabled(false);
+            restartVotesCheckBox.setEnabled(false);
+            shuffleVotesCheckBox.setEnabled(false);
+            timeVotesCheckBox.setEnabled(false);
+            demoRecordVotesCheckBox.setEnabled(false);
+            demoReplayVotesCheckBox.setEnabled(false);
+        }
+        else {
+            voteDurationTextField.setEnabled(true);
+            minVotePercentTextField.setEnabled(true);
+            forceCommanderPlayerLimitTextField.setEnabled(true);
+            concedeVotesCheckBox.setEnabled(true);
+            drawVotesCheckBox.setEnabled(true);
+            electVotesCheckBox.setEnabled(true);
+            impeachVotesCheckBox.setEnabled(true);
+            kickVotesCheckBox.setEnabled(true);
+            mapVotesCheckBox.setEnabled(true);
+            messageVotesCheckBox.setEnabled(true);
+            muteVotesCheckBox.setEnabled(true);
+            nextMapVotesCheckBox.setEnabled(true);
+            modVotesCheckBox.setEnabled(true);
+            pauseVotesCheckBox.setEnabled(true);
+            unpauseVotesCheckBox.setEnabled(true);
+            raceVotesCheckBox.setEnabled(true);
+            refVotesCheckBox.setEnabled(true);
+            restartVotesCheckBox.setEnabled(true);
+            shuffleVotesCheckBox.setEnabled(true);
+            timeVotesCheckBox.setEnabled(true);
+            demoRecordVotesCheckBox.setEnabled(true);
+            demoReplayVotesCheckBox.setEnabled(true);
+        }
+    }
+
+    private void onVotesReloadData() {
+        String[] names={
+            "sv_disableVoting",
+            "sv_voteduration",
+            "sv_minVotePercent",
+            "sv_electcommanders",
+            "sv_allowConcedeVotes",
+            "sv_allowDrawVotes",
+            "sv_allowElectVotes",
+            "sv_allowImpeachVotes",
+            "sv_allowKickVotes",
+            "sv_allowMapVotes",
+            "sv_allowMsgVotes",
+            "sv_allowMuteVotes",
+            "sv_allowNextMapVotes",
+            "sv_allowModVotes",
+            "sv_allowPauseVotes",
+            "sv_allowUnPauseVotes",
+            "sv_allowRaceVotes",
+            "sv_allowRefVotes",
+            "sv_allowRestartVotes",
+            "sv_allowShuffleVotes",
+            "sv_allowTimeVotes",
+            "sv_allowrecordvotes",
+            "sv_allowreplayvotes"
+        };
+        HashMap<String,String> config=cman.get(names);
+        if (config.get("sv_disableVoting").equals("1")) disableVotingCheckBox.setSelected(true);
+        else disableVotingCheckBox.setSelected(false);
+        voteDurationTextField.setText(config.get("sv_voteduration"));
+        minVotePercentTextField.setText(config.get("sv_minVotePercent"));
+        forceCommanderPlayerLimitTextField.setText(config.get("sv_electcommanders"));
+        if (config.get("sv_allowConcedeVotes").equals("1")) concedeVotesCheckBox.setSelected(true);
+        else concedeVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowDrawVotes").equals("1")) drawVotesCheckBox.setSelected(true);
+        else drawVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowElectVotes").equals("1")) electVotesCheckBox.setSelected(true);
+        else electVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowImpeachVotes").equals("1")) impeachVotesCheckBox.setSelected(true);
+        else impeachVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowKickVotes").equals("1")) kickVotesCheckBox.setSelected(true);
+        else kickVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowMapVotes").equals("1")) mapVotesCheckBox.setSelected(true);
+        else mapVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowMsgVotes").equals("1")) messageVotesCheckBox.setSelected(true);
+        else messageVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowMuteVotes").equals("1")) muteVotesCheckBox.setSelected(true);
+        else muteVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowNextMapVotes").equals("1")) nextMapVotesCheckBox.setSelected(true);
+        else nextMapVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowModVotes").equals("1")) modVotesCheckBox.setSelected(true);
+        else modVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowPauseVotes").equals("1")) pauseVotesCheckBox.setSelected(true);
+        else pauseVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowUnPauseVotes").equals("1")) unpauseVotesCheckBox.setSelected(true);
+        else unpauseVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowRaceVotes").equals("1")) raceVotesCheckBox.setSelected(true);
+        else raceVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowRefVotes").equals("1")) refVotesCheckBox.setSelected(true);
+        else refVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowRestartVotes").equals("1")) restartVotesCheckBox.setSelected(true);
+        else restartVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowShuffleVotes").equals("1")) shuffleVotesCheckBox.setSelected(true);
+        else shuffleVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowTimeVotes").equals("1")) timeVotesCheckBox.setSelected(true);
+        else timeVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowrecordvotes").equals("1")) demoRecordVotesCheckBox.setSelected(true);
+        else demoRecordVotesCheckBox.setSelected(false);
+        if (config.get("sv_allowreplayvotes").equals("1")) demoReplayVotesCheckBox.setSelected(true);
+        else demoReplayVotesCheckBox.setSelected(false);
+    }
+
+    private void onVotesApply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("sv_disableVoting",disableVotingCheckBox.isSelected()?"1":"0");
+        config.put("sv_voteduration",voteDurationTextField.getText());
+        config.put("sv_minVotePercent",minVotePercentTextField.getText());
+        config.put("sv_electcommanders",forceCommanderPlayerLimitTextField.getText());
+        config.put("sv_allowConcedeVotes",concedeVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowDrawVotes",drawVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowElectVotes",electVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowImpeachVotes",impeachVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowKickVotes",kickVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowMapVotes",mapVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowMsgVotes",messageVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowMuteVotes",muteVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowNextMapVotes",nextMapVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowModVotes",modVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowPauseVotes",pauseVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowUnPauseVotes",unpauseVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowRaceVotes",raceVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowRefVotes",refVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowRestartVotes",restartVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowShuffleVotes",shuffleVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowTimeVotes",timeVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowrecordvotes",demoRecordVotesCheckBox.isSelected()?"1":"0");
+        config.put("sv_allowreplayvotes",demoReplayVotesCheckBox.isSelected()?"1":"0");
+        cman.set(config);
     }
 
     private void onTeamDamage() {
@@ -379,6 +961,7 @@ public class MainForm extends JFrame{
             allowSiegeTeamDamageCheckBox.setEnabled(true);
             allowTowerTeamDamageCheckBox.setEnabled(true);
             allowItemTeamDamageCheckBox.setEnabled(true);
+            teamDamagePercentTextField.setEditable(true);
         }
         else {
             allowMeleeTeamDamageCheckBox.setEnabled(false);
@@ -386,6 +969,7 @@ public class MainForm extends JFrame{
             allowSiegeTeamDamageCheckBox.setEnabled(false);
             allowTowerTeamDamageCheckBox.setEnabled(false);
             allowItemTeamDamageCheckBox.setEnabled(false);
+            teamDamagePercentTextField.setEditable(false);
         }
 
     }
