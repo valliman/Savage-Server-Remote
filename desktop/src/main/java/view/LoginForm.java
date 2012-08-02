@@ -1,12 +1,17 @@
 package view;
 
+import controller.Tool;
 import model.ConnectionManager;
+import model.DBManager;
+import model.Favorite;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import static controller.Tool.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,12 +24,13 @@ public class LoginForm extends JFrame{
     private JTextField ipTextField;
     private JTextField portTextField;
     private JPasswordField passwordTextField;
-    private JList list1;
+    private JList favoritesList;
+    private DefaultListModel favoritesListModel;
     private JButton connectButton;
     private JButton addToFavoritesButton;
     private JButton removeFromFavoritesButton;
-    private JButton button1;
-    private JButton button2;
+    private JButton upButton;
+    private JButton downButton;
     private JPanel contentPane;
 
     public LoginForm() {
@@ -36,38 +42,136 @@ public class LoginForm extends JFrame{
                 onConnect();
             }
         });
+        loadFavorites();
+        addToFavoritesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAddToFavorites();
+            }
+        });
+        removeFromFavoritesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onRemoveFromFavorites();
+            }
+        });
         pack();
         setVisible(true);
+
+        favoritesList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                onfavoritesListChange();
+            }
+        });
+        upButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onUpButton();
+            }
+        });
+        downButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDownButton();
+            }
+        });
     }
 
-    public void onConnect() {
-        String errorMsg="";
-        int counter=0;
-        if(!validIP(ipTextField.getText())) {
-            counter++;
-            errorMsg+=" IP";
+    private void onDownButton() {
+        DBManager dbman=new DBManager();
+        if(favoritesList.getSelectedIndex()!=favoritesList.getLastVisibleIndex()) {
+            Favorite involved1=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[1])));
+            Favorite involved2=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()+1).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()+1).toString().split(":")[1])));
+            List<Favorite> oldlist=dbman.getAll();
+            dbman.deleteAll();
+            List<Favorite> newlist=new ArrayList<Favorite>();
+            for(Favorite f:oldlist) {
+                if (f.getId()==involved1.getId()) {
+                    newlist.add(involved2);
+                }
+                else if (f.getId()==involved2.getId()) {
+                    newlist.add(involved1);
+                }
+                else {
+                    newlist.add(f);
+                }
+            }
+            dbman.saveList(newlist);
+            dbman.close();
+            loadFavorites();
         }
-        if(!validPort(portTextField.getText())) {
-            counter++;
-            if(counter>1) errorMsg+=", Port";
-            else errorMsg+=" Port";
+    }
+
+    private void onUpButton() {
+        DBManager dbman=new DBManager();
+        if(favoritesList.getSelectedIndex()!=0) {
+            Favorite involved1=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex() - 1).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex() - 1).toString().split(":")[1])));
+            Favorite involved2=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[1])));
+            List<Favorite> oldlist=dbman.getAll();
+            dbman.deleteAll();
+            List<Favorite> newlist=new ArrayList<Favorite>();
+            for(Favorite f:oldlist) {
+                if (f.getId()==involved1.getId()) {
+                    newlist.add(involved2);
+                }
+                else if (f.getId()==involved2.getId()) {
+                    newlist.add(involved1);
+                }
+                else {
+                    newlist.add(f);
+                }
+            }
+            dbman.saveList(newlist);
+            dbman.close();
+            loadFavorites();
         }
-        if(!validPassword(passwordTextField.getText())) {
-            counter++;
-            if(counter>1) errorMsg+=", Password";
-            else errorMsg+=" Password";
+    }
+
+    private void onfavoritesListChange() {
+        if(favoritesList.getSelectedIndex()!=-1 && favoritesList.getSelectedIndex()!=favoritesList.getLastVisibleIndex()) {
+            DBManager dbman=new DBManager();
+            Favorite f=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[1])));
+            ipTextField.setText(f.getIp());
+            portTextField.setText(""+f.getPort());
+            passwordTextField.setText(f.getPassword());
+            dbman.close();
         }
-        if(counter==0) {
+    }
+
+    private void onRemoveFromFavorites() {
+        DBManager dbman=new DBManager();
+        dbman.delete(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[1])));
+        favoritesListModel.removeElementAt(favoritesList.getSelectedIndex());
+        dbman.close();
+    }
+
+    private void loadFavorites() {
+        DBManager dbman=new DBManager();
+        favoritesListModel=new DefaultListModel();
+        for (Favorite f:dbman.getAll()) {
+            favoritesListModel.addElement(f.getIp() + ":" + f.getPort());
+        }
+        favoritesList.setModel(favoritesListModel);
+        dbman.close();
+    }
+
+    private void onAddToFavorites() {
+        DBManager dbman=new DBManager();
+        if(Tool.isValid(ipTextField.getText(), portTextField.getText(), passwordTextField.getText())) {
+            dbman.save(new Favorite(ipTextField.getText(),Integer.parseInt(portTextField.getText()),passwordTextField.getText()));
+            favoritesListModel.addElement(ipTextField.getText()+":"+portTextField.getText());
+            //favoritesList.setModel(favoritesListModel);
+        }
+        dbman.close();
+    }
+
+    private void onConnect() {
+        if(Tool.isValid(ipTextField.getText(), portTextField.getText(), passwordTextField.getText())) {
             ConnectionManager cman=new ConnectionManager(ipTextField.getText(), portTextField.getText(), passwordTextField.getText());
             dispose();
             new MainForm(cman);
         }
-        else {
-            String errorPrefix=counter+" Errors:";
-            String errorSuffix=" invalid!";
-            new ErrorDialog(errorPrefix+errorMsg+errorSuffix);
-        }
-
     }
 
 }

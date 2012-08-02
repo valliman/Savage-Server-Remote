@@ -1,5 +1,7 @@
 package controller;
 
+import view.ErrorDialog;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Bernhard
@@ -66,6 +68,34 @@ public class Tool {
             return false;
         }
         return true;
+    }
+
+    public static boolean isValid(String ip, String port, String password) {
+        String errorMsg="";
+        int counter=0;
+        if(!validIP(ip)) {
+            counter++;
+            errorMsg+=" IP";
+        }
+        if(!validPort(port)) {
+            counter++;
+            if(counter>1) errorMsg+=", Port";
+            else errorMsg+=" Port";
+        }
+        if(!validPassword(password)) {
+            counter++;
+            if(counter>1) errorMsg+=", Password";
+            else errorMsg+=" Password";
+        }
+        if(counter==0) {
+            return true;
+        }
+        else {
+            String errorPrefix=counter+" Errors:";
+            String errorSuffix=" invalid!";
+            new ErrorDialog(errorPrefix+errorMsg+errorSuffix);
+            return false;
+        }
     }
 
 }
