@@ -19,10 +19,17 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.hsqldb</groupId>-->
+            <!--<artifactId>hsqldb</artifactId>-->
+            <!--<version>2.2.8</version>-->
+        <!--</dependency>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.2.8</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.7.2</version>
         </dependency>
     </dependencies>
 
