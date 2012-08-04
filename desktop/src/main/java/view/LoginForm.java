@@ -61,7 +61,7 @@ public class LoginForm extends JFrame{
         favoritesList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                onfavoritesListChange();
+                onFavoritesListChange();
             }
         });
         upButton.addActionListener(new ActionListener() {
@@ -128,8 +128,8 @@ public class LoginForm extends JFrame{
         }
     }
 
-    private void onfavoritesListChange() {
-        if(favoritesList.getSelectedIndex()!=-1 && favoritesList.getSelectedIndex()!=favoritesList.getLastVisibleIndex()) {
+    private void onFavoritesListChange() {
+        if(favoritesList.getSelectedIndex()!=-1 && favoritesList.getSelectedIndex()!=favoritesList.getLastVisibleIndex()+1) {
             DBManager dbman=new DBManager();
             Favorite f=dbman.get(new Favorite(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[0], Integer.parseInt(favoritesListModel.getElementAt(favoritesList.getSelectedIndex()).toString().split(":")[1])));
             ipTextField.setText(f.getIp());

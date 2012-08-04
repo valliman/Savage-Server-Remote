@@ -1,6 +1,13 @@
 package controller;
 
-import view.ErrorDialog;
+import view.MessageDialog;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -93,9 +100,43 @@ public class Tool {
         else {
             String errorPrefix=counter+" Errors:";
             String errorSuffix=" invalid!";
-            new ErrorDialog(errorPrefix+errorMsg+errorSuffix);
+            new MessageDialog("Error",errorPrefix+errorMsg+errorSuffix);
             return false;
         }
+    }
+
+    public static ImageIcon getMapImage(String mapname,int width, int height) {
+        ImageIcon icon=new ImageIcon();
+        BufferedImage img=null;
+        try {
+            img=ImageIO.read(new URL("http://www.newerth.com/maps/sav1/"+mapname+"_overhead.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        img=resize(img,width,height);
+        icon.setImage(img);
+        return icon;
+    }
+
+    public static ImageIcon getMapImage(String mapname) {
+        ImageIcon icon=new ImageIcon();
+        try {
+            icon.setImage(ImageIO.read(new URL("http://www.newerth.com/maps/sav1/" + mapname + "_overhead.jpg")));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return icon;
+    }
+
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage dimg = dimg = new BufferedImage(newW, newH, img.getType());
+        Graphics2D g = dimg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+        g.dispose();
+        return dimg;
     }
 
 }

@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ErrorDialog extends JDialog {
+public class MessageDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JLabel errorMessage;
 
-    public ErrorDialog(String text) {
-        setTitle("Error");
+    public MessageDialog(String title, String text) {
+        setTitle(title);
         errorMessage.setText(text);
         setContentPane(contentPane);
         setModal(true);

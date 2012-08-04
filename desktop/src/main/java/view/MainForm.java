@@ -1,5 +1,6 @@
 package view;
 
+import controller.Tool;
 import model.ConnectionManager;
 
 import javax.swing.*;
@@ -252,21 +253,28 @@ public class MainForm extends JFrame{
     private JPanel contentPane;
     private JCheckBox fallingDamageCheckBox;
     private JCheckBox uphillLeapCheckBox;
-    private JPanel mapsImagePanel;
-    private JLabel currentMapTextField;
-    private JLabel nextMapTextField;
-    private JButton reloadDataButton;
-    private JButton reloadDataButton1;
+    private JLabel currentMapLabel;
+    private JLabel nextMapLabel;
+    private JButton overviewReloadDataButton;
+    private JButton playerListReloadDataButton;
     private JCheckBox allowItemTeamDamageCheckBox;
     private JCheckBox replayDemosCheckBox;
     private JCheckBox recordDemosCheckBox;
     private JCheckBox modVotesCheckBox;
     private JCheckBox sprintBurstCheckBox;
     private JTextArea consoleTextArea;
+    private JScrollPane consoleTextScrollPane;
+    private JLabel serverNameLabel;
+    private JLabel worldLabel;
+    private JLabel versionLabel;
+    private JLabel playersLabel;
+    private JLabel timePlayedLabel;
+    private JLabel timeLeftLabel;
+    private JLabel overviewMapImageLabel;
     private ConnectionManager cman;
 
     public MainForm(ConnectionManager cman) {
-        setTitle("Login");
+        setTitle("Savage Remote Controller Pro");
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.cman=cman;
@@ -276,8 +284,6 @@ public class MainForm extends JFrame{
                 onLogOut();
             }
         });
-        pack();
-        setVisible(true);
         extendTimelimitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -478,10 +484,84 @@ public class MainForm extends JFrame{
                 }
             }
         });
+        pack();
+        setVisible(true);
+
+        overviewReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOverviewReloadData();
+            }
+        });
+        loadMapButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onLoadMap();
+            }
+        });
+        uploadMapButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onUploadMap();
+            }
+        });
+    }
+
+    private void onUploadMap() {
+        new UploadMapForm(cman);
+    }
+
+    private void onLoadMap() {
+        new LoadMapForm(cman);
+    }
+
+    private void onOverviewReloadData() {
+        String[] names={
+            "svr_name",
+            "svr_world",
+            "sv_map_tag",
+            "gs_team0_players",
+            "gs_team1_players",
+            "gs_team2_players",
+            "gs_team3_players",
+            "gs_team4_players",
+            "svr_maxclients",
+            "gs_game_time",
+            "sv_timeLimit",
+            "sv_nextmap"
+        };
+        HashMap<String,String> config=cman.get(names);
+        serverNameLabel.setText(config.get("svr_name"));
+        worldLabel.setText(config.get("svr_world"));
+        versionLabel.setText(config.get("sv_map_tag"));
+        int players=Integer.parseInt(config.get("gs_team0_players"))+Integer.parseInt(config.get("gs_team1_players"))+Integer.parseInt(config.get("gs_team2_players"))+Integer.parseInt(config.get("gs_team3_players"))+Integer.parseInt(config.get("gs_team4_players"));
+        int maxplayers=Integer.parseInt(config.get("svr_maxclients"));
+        playersLabel.setText(""+players+"/"+maxplayers);
+        int msplayed=Integer.parseInt(config.get("gs_game_time"));
+        int mplayed=msplayed/60000;
+        int splayed=(int)((float)((msplayed%60000)/1000));
+        String tpm=""+mplayed;
+        String tps=""+splayed;
+        if(tpm.length()<2) tpm="0"+tpm;
+        if(tps.length()<2) tps="0"+tps;
+        timePlayedLabel.setText(tpm+":"+tps);
+        int mslimit=Integer.parseInt(config.get("sv_timeLimit"));
+        int msleft=mslimit-msplayed;
+        int mleft=msleft/60000;
+        int sleft=(int)((float)((msleft%60000)/1000));
+        String tlm=""+mleft;
+        String tls=""+sleft;
+        if(tlm.length()<2) tlm="0"+tlm;
+        if(tls.length()<2) tls="0"+tls;
+        if(mleft>=0 && sleft>=0) timeLeftLabel.setText(tlm+":"+tls);
+        else timeLeftLabel.setText("OVERTIME");
+        currentMapLabel.setText(config.get("svr_world"));
+        nextMapLabel.setText(config.get("sv_nextmap"));
+        overviewMapImageLabel.setIcon(Tool.getMapImage(config.get("svr_world"),128,128));
     }
 
     private void onConsoleSend() {
-        consoleTextArea.setText("> " + consoleTextField.getText() + "\n" + cman.execute(consoleTextField.getText()));
+        consoleTextArea.setText(consoleTextArea.getText()+ "> " + consoleTextField.getText() + "\n" + cman.execute(consoleTextField.getText()) + "\n\n");
         consoleTextField.setText("");
     }
 
