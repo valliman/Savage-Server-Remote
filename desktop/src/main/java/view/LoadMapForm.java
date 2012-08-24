@@ -21,6 +21,7 @@ public class LoadMapForm extends JFrame{
     private JButton loadMapButton;
     private JPanel contentPane;
     private JLabel loadMapImageLabel;
+    private JCheckBox devModeCheckBox;
     private ConnectionManager cman;
 
     public LoadMapForm(ConnectionManager cman) {
@@ -62,6 +63,11 @@ public class LoadMapForm extends JFrame{
     }
 
     private void onLoadMap() {
-        cman.execute("world "+loadMapComboBox.getSelectedItem().toString());
+        if(devModeCheckBox.isSelected()) {
+            cman.execute("devworld "+loadMapComboBox.getSelectedItem().toString());
+        }
+        else {
+            cman.execute("world "+loadMapComboBox.getSelectedItem().toString());
+        }
     }
 }

@@ -271,6 +271,14 @@ public class MainForm extends JFrame{
     private JLabel timePlayedLabel;
     private JLabel timeLeftLabel;
     private JLabel overviewMapImageLabel;
+    private JCheckBox allUnitsAvailableCheckBox;
+    private JCheckBox allWeaponsAvailableCheckBox;
+    private JCheckBox infiniteGoldCheckBox;
+    private JCheckBox infiniteResourcesCheckBox;
+    private JCheckBox devBalancedTeamsCheckBox;
+    private JCheckBox fastBuildCheckBox;
+    private JButton devReloadDataButton;
+    private JButton devApplyButton;
     private ConnectionManager cman;
 
     public MainForm(ConnectionManager cman) {
@@ -505,6 +513,77 @@ public class MainForm extends JFrame{
                 onUploadMap();
             }
         });
+        devReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDevReloadData();
+            }
+        });
+        devApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onDevApply();
+            }
+        });
+    }
+
+    private void onDevApply() {
+        HashMap<String,String> config=new HashMap<String, String>();
+        config.put("g_allunitsavailable",allUnitsAvailableCheckBox.isSelected()?"1":"0");
+        config.put("g_allweaponsavailable",allWeaponsAvailableCheckBox.isSelected()?"1":"0");
+        config.put("sv_infinitegold",infiniteGoldCheckBox.isSelected()?"1":"0");
+        config.put("sv_infiniteresources",infiniteResourcesCheckBox.isSelected()?"1":"0");
+        config.put("sv_balancedteams",devBalancedTeamsCheckBox.isSelected()?"1":"0");
+        config.put("sv_fasttech",fastBuildCheckBox.isSelected()?"1":"0");
+        cman.set(config);
+    }
+
+    private void onDevReloadData() {
+        String[] names={
+                "g_allunitsavailable",
+                "g_allweaponsavailable",
+                "sv_infinitegold",
+                "sv_infiniteresources",
+                "sv_balancedteams",
+                "sv_fasttech"
+        };
+        HashMap<String,String> config=cman.get(names);
+        if(config.get("g_allunitsavailable").equals("1")) {
+            allUnitsAvailableCheckBox.setSelected(true);
+        }
+        else {
+            allUnitsAvailableCheckBox.setSelected(false);
+        }
+        if(config.get("g_allweaponsavailable").equals("1")) {
+            allWeaponsAvailableCheckBox.setSelected(true);
+        }
+        else {
+            allWeaponsAvailableCheckBox.setSelected(false);
+        }
+        if (config.get("sv_infinitegold").equals("1")) {
+            infiniteGoldCheckBox.setSelected(true);
+        }
+        else {
+            infiniteGoldCheckBox.setSelected(false);
+        }
+        if (config.get("sv_infiniteresources").equals("1")) {
+            infiniteResourcesCheckBox.setSelected(true);
+        }
+        else {
+            infiniteResourcesCheckBox.setSelected(false);
+        }
+        if (config.get("sv_balancedteams").equals("1")) {
+            devBalancedTeamsCheckBox.setSelected(true);
+        }
+        else {
+            devBalancedTeamsCheckBox.setSelected(false);
+        }
+        if (config.get("sv_fasttech").equals("1")) {
+            fastBuildCheckBox.setSelected(true);
+        }
+        else {
+            fastBuildCheckBox.setSelected(false);
+        }
     }
 
     private void onUploadMap() {
