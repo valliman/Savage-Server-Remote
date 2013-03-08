@@ -6,10 +6,8 @@ import model.ConnectionManager;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -26,12 +24,12 @@ public class MainForm extends JFrame{
     private JTabbedPane tabbedPane3;
     private JTextField consoleTextField;
     private JButton consoleSendButton;
-    private JComboBox comboBox1;
-    private JTable table1;
+    private JComboBox objectEditorComboBox;
+    private JTable objectEditorTable;
     private JButton objectEditorApplyButton;
     private JButton objectEditorReloadDataButton;
     private JButton objectEditorSaveButton;
-    private JComboBox comboBox2;
+    private JComboBox stateEditorComboBox;
     private JTable table2;
     private JButton stateEditorApplyButton;
     private JButton stateEditorReloadDataButton;
@@ -152,9 +150,9 @@ public class MainForm extends JFrame{
     private JButton shuffleEvenTeamsButton;
     private JComboBox comboBox4;
     private JButton applyButton2;
-    private JTable table3;
-    private JButton settingsReloadDataButton;
-    private JButton settingsApplyButton;
+    private JTable settingsEditorTable;
+    private JButton settingsEditorReloadDataButton;
+    private JButton settingsEditorApplyButton;
     private JButton generalReloadDataButton;
     private JButton generalApplyButton;
     private JButton advanced1ReloadDataButton;
@@ -280,6 +278,10 @@ public class MainForm extends JFrame{
     private JButton devReloadDataButton;
     private JButton devApplyButton;
     private ConnectionManager cman;
+    private HashMap<String,String> reloadconfig;
+    private HashMap<String,String> reloadobject;
+    private HashMap<String,String> appliedobject;
+    private int previousSelectionObjectEditorComboBox;
 
     public MainForm(ConnectionManager cman) {
         setTitle("Savage Remote Controller Pro");
@@ -525,6 +527,104 @@ public class MainForm extends JFrame{
                 onDevApply();
             }
         });
+        settingsEditorReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onSettingsEditorReloadData();
+            }
+        });
+        settingsEditorApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onsettingsEditorApply();
+            }
+        });
+        settingsEditorTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+        objectEditorReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onObjectEditorReloadData();
+            }
+        });
+        objectEditorComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                onObjectEditorComboBoxChange();
+            }
+        });
+        objectEditorApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onObjectEditorApply();
+            }
+        });
+        objectEditorSaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onObjectEditorSave();
+            }
+        });
+    }
+
+    private void onObjectEditorSave() {
+        HashMap<String,String> applyobject=Tool.TableModel2HashMap(objectEditorTable.getModel());
+        cman.saveObject(Tool.getChange(reloadobject, applyobject));
+        appliedobject=applyobject;
+    }
+
+    private void onObjectEditorApply() {
+        HashMap<String,String> applyobject=Tool.TableModel2HashMap(objectEditorTable.getModel());
+        cman.applyObject(Tool.getChange(reloadobject, applyobject));
+        appliedobject=applyobject;
+    }
+
+    private void onObjectEditorComboBoxChange() {
+        if(previousSelectionObjectEditorComboBox!=objectEditorComboBox.getSelectedIndex()) {
+            HashMap<String,String> applyobject=Tool.TableModel2HashMap(objectEditorTable.getModel());
+            boolean different=false;
+            if(Tool.isDifferent(appliedobject,applyobject)) {
+                QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
+                different=!qd.getAnswer();
+            }
+            if(!different) {
+                previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
+                reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+                objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
+            }
+            else {
+                objectEditorComboBox.setSelectedIndex(previousSelectionObjectEditorComboBox);
+                previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
+            }
+        }
+    }
+
+    private void onObjectEditorReloadData() {
+        objectEditorComboBox.removeAllItems();
+        String objshow=cman.get("objshow");
+        objshow=objshow.replace(" ","");
+        objshow=objshow.replace("^rOBJECTSLIST\n","");
+        objshow=objshow.replace("^w","");
+        String[] temp=objshow.split("\n");
+        for(String s:temp) {
+                objectEditorComboBox.addItem(s.split(":")[1]);
+        }
+        previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
+        reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+        appliedobject=reloadobject;
+        objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
+    }
+
+    private void onsettingsEditorApply() {
+        HashMap<String,String> applyconfig=Tool.TableModel2HashMap(settingsEditorTable.getModel());
+        cman.set(Tool.getChange(reloadconfig,applyconfig));
+        reloadconfig=applyconfig;
+    }
+
+    private void onSettingsEditorReloadData() {
+        reloadconfig=cman.getAll();
+        settingsEditorTable.setModel(Tool.HashMap2TableModel(reloadconfig));
+        RowSorter sorter = settingsEditorTable.getRowSorter();
+        sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
     }
 
     private void onDevApply() {
@@ -665,6 +765,7 @@ public class MainForm extends JFrame{
             "p_sprintRegainDelay",
             "p_sprintRegainLandDelay",
             "p_maxBlockTime",
+            "p_blockSpeed",
             "p_slowWeaponAttack",
             "p_attackingSpeed",
             "p_minslope",

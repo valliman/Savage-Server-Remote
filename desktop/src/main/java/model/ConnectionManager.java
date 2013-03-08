@@ -3,6 +3,7 @@ package model;
 import at.valli.savage.connection.ConnectionException;
 import at.valli.savage.connection.StatefulConnector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,47 @@ public class ConnectionManager {
         return config;
     }
 
+    public HashMap<String,String> getObject(String name) {
+        String cmd="objedit "+name+"; objlist";
+        String msg=execute(cmd);
+        msg=msg.replace("^r","");
+        msg=msg.replace("=\n","");
+        msg=msg.replace("=","");
+        String[] temp=msg.split("\n");
+        HashMap<String,String> object=new HashMap<String, String>();
+        for(String s:temp) {
+            if(s.contains("Dataforobject")) {
+                continue;
+            }
+            else {
+                object.put(s.split(": ")[0],s.split(":")[1]);
+            }
+        }
+        return object;
+    }
+
+    public HashMap<String,String> getAll() {
+        String s=execute("cvarlist 0 9999");
+        String[] parts=s.replace("\"", "").split("\n");
+        ArrayList<String> nameandvalue=new ArrayList<String>();
+        for(String part:parts) {
+            try{
+                nameandvalue.add(part.split("]  ")[1]);
+            } catch(Exception e) {
+                // do nothing
+            }
+        }
+        HashMap<String,String> config=new HashMap<String,String>();
+        for(String part:nameandvalue) {
+            try {
+                config.put(part.split(" ")[0],part.split(" ")[1]);
+            } catch(Exception e) {
+                // do nothing
+            }
+        }
+        return config;
+    }
+
     public String execute(String cmd) {
         String msg="";
         try {
@@ -64,5 +106,23 @@ public class ConnectionManager {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return msg;
+    }
+
+    public void applyObject(HashMap<String, String> object) {
+        String cmd="";
+        for(Map.Entry<String,String> entry:object.entrySet()) {
+            cmd+=" objset "+entry.getKey()+" \""+entry.getValue()+"\";";
+        }
+        System.out.print("asdf "+cmd);
+        execute(cmd);
+    }
+
+    public void saveObject(HashMap<String, String> object) {
+        String cmd="";
+        for(Map.Entry<String,String> entry:object.entrySet()) {
+            cmd+=" objset "+entry.getKey()+" \""+entry.getValue()+"\";";
+        }
+        cmd+=" objsave;";
+        execute(cmd);
     }
 }

@@ -1,13 +1,19 @@
 package controller;
 
 import view.MessageDialog;
+import view.MyTableModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -139,4 +145,36 @@ public class Tool {
         return dimg;
     }
 
+    public static TableModel HashMap2TableModel(HashMap<String, String> map) {
+        DefaultTableModel model = new MyTableModel (
+                new Object[] { "Name", "Value" }, 0
+        );
+        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry)it.next();
+            model.addRow(new Object[] { entry.getKey(), entry.getValue() });
+        }
+        return model;
+    }
+
+    public static HashMap<String,String> TableModel2HashMap(TableModel model) {
+        HashMap<String,String> ret = new HashMap<String, String>();
+        for(int i=0; i<model.getRowCount(); i++) {
+            ret.put(model.getValueAt(i, 0).toString(), model.getValueAt(i, 1).toString());
+        }
+        return ret;
+    }
+
+    public static HashMap<String,String> getChange(HashMap<String,String> normal,HashMap<String,String> changed) {
+        HashMap<String,String> difference = new HashMap<String, String>();
+        for(Map.Entry<String,String> entry:changed.entrySet()) {
+            if(!entry.getValue().equals(normal.get(entry.getKey()))) {
+                difference.put(entry.getKey(),entry.getValue());
+            }
+        }
+        return difference;
+    }
+
+    public static boolean isDifferent(HashMap<String,String> normal,HashMap<String,String> changed) {
+        return !getChange(normal,changed).isEmpty();
+    }
 }
