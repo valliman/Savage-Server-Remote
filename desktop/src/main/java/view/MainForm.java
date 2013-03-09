@@ -30,7 +30,7 @@ public class MainForm extends JFrame{
     private JButton objectEditorReloadDataButton;
     private JButton objectEditorSaveButton;
     private JComboBox stateEditorComboBox;
-    private JTable table2;
+    private JTable stateEditorTable;
     private JButton stateEditorApplyButton;
     private JButton stateEditorReloadDataButton;
     private JButton stateEditorSaveButton;
@@ -281,7 +281,8 @@ public class MainForm extends JFrame{
     private HashMap<String,String> reloadconfig;
     private HashMap<String,String> reloadobject;
     private HashMap<String,String> appliedobject;
-    private int previousSelectionObjectEditorComboBox;
+    private HashMap<String,String> reloadstate;
+    private HashMap<String,String> appliedstate;
 
     public MainForm(ConnectionManager cman) {
         setTitle("Savage Remote Controller Pro");
@@ -536,7 +537,7 @@ public class MainForm extends JFrame{
         settingsEditorApplyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onsettingsEditorApply();
+                onSettingsEditorApply();
             }
         });
         settingsEditorTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -564,6 +565,80 @@ public class MainForm extends JFrame{
                 onObjectEditorSave();
             }
         });
+        stateEditorReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onStateEditorReloadData();
+            }
+        });
+        stateEditorComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                onStateEditorComboBoxChange();
+            }
+        });
+        stateEditorApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onStateEditorApply();
+            }
+        });
+        stateEditorSaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onStateEditorSave();
+            }
+        });
+    }
+
+    private void onStateEditorSave() {
+        HashMap<String,String> applystate=Tool.TableModel2HashMap(stateEditorTable.getModel());
+        cman.saveState(Tool.getChange(reloadstate, applystate));
+        appliedstate=applystate;
+    }
+
+    private void onStateEditorApply() {
+        HashMap<String,String> applystate=Tool.TableModel2HashMap(stateEditorTable.getModel());
+        cman.applyState(Tool.getChange(reloadstate, applystate));
+        appliedstate=applystate;
+    }
+
+    private void onStateEditorComboBoxChange() {
+        HashMap<String,String> applystate=Tool.TableModel2HashMap(stateEditorTable.getModel());
+        if(Tool.isDifferent(appliedstate,applystate)) {
+            QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
+            if(qd.getAnswer()) {
+                reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+                appliedstate=reloadstate;
+                stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
+            }
+            else {
+                onStateEditorApply();
+                reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+                appliedstate=reloadstate;
+                stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
+            }
+        }
+        else {
+            reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+            appliedstate=reloadstate;
+            stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
+        }
+    }
+
+    private void onStateEditorReloadData() {
+        stateEditorComboBox.removeAllItems();
+        String liststates=cman.get("liststates");
+        liststates=liststates.replace(" ","");
+        liststates=liststates.replace("^rSTATELIST\n","");
+        liststates=liststates.replace("^w","");
+        String[] temp=liststates.split("\n");
+        for(String s:temp) {
+            stateEditorComboBox.addItem(s.split(":")[1]);
+        }
+        reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+        appliedstate=reloadstate;
+        stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
     }
 
     private void onObjectEditorSave() {
@@ -579,22 +654,25 @@ public class MainForm extends JFrame{
     }
 
     private void onObjectEditorComboBoxChange() {
-        if(previousSelectionObjectEditorComboBox!=objectEditorComboBox.getSelectedIndex()) {
-            HashMap<String,String> applyobject=Tool.TableModel2HashMap(objectEditorTable.getModel());
-            boolean different=false;
-            if(Tool.isDifferent(appliedobject,applyobject)) {
-                QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
-                different=!qd.getAnswer();
-            }
-            if(!different) {
-                previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
+        HashMap<String,String> applyobject=Tool.TableModel2HashMap(objectEditorTable.getModel());
+        if(Tool.isDifferent(appliedobject,applyobject)) {
+            QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
+            if(qd.getAnswer()) {
                 reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+                appliedobject=reloadobject;
                 objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
             }
             else {
-                objectEditorComboBox.setSelectedIndex(previousSelectionObjectEditorComboBox);
-                previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
+                onObjectEditorApply();
+                reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+                appliedobject=reloadobject;
+                objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
             }
+        }
+        else {
+            reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+            appliedobject=reloadobject;
+            objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
         }
     }
 
@@ -608,13 +686,12 @@ public class MainForm extends JFrame{
         for(String s:temp) {
                 objectEditorComboBox.addItem(s.split(":")[1]);
         }
-        previousSelectionObjectEditorComboBox=objectEditorComboBox.getSelectedIndex();
         reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
         appliedobject=reloadobject;
         objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
     }
 
-    private void onsettingsEditorApply() {
+    private void onSettingsEditorApply() {
         HashMap<String,String> applyconfig=Tool.TableModel2HashMap(settingsEditorTable.getModel());
         cman.set(Tool.getChange(reloadconfig,applyconfig));
         reloadconfig=applyconfig;

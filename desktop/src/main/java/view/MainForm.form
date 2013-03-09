@@ -3597,7 +3597,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="d90bd" class="javax.swing.JTable" binding="table2" default-binding="true">
+                  <component id="d90bd" class="javax.swing.JTable" binding="stateEditorTable">
                     <constraints/>
                     <properties/>
                   </component>

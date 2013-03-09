@@ -66,14 +66,47 @@ public class ConnectionManager {
         String[] temp=msg.split("\n");
         HashMap<String,String> object=new HashMap<String, String>();
         for(String s:temp) {
-            if(s.contains("Dataforobject")) {
+            if(s.contains("Data for object")) {
                 continue;
             }
             else {
-                object.put(s.split(": ")[0],s.split(":")[1]);
+                String key=s.split(": ")[0];
+                String value="";
+                try {
+                    value=s.split(": ")[1];
+                } catch(Exception e) {
+                    // do nothing
+                }
+                object.put(key,value);
             }
         }
         return object;
+    }
+
+    public HashMap<String,String> getState(String name) {
+        String cmd="stateedit "+name+"; statelist";
+        String msg=execute(cmd);
+        msg=msg.replace("^r","");
+        msg=msg.replace("=\n","");
+        msg=msg.replace("=","");
+        String[] temp=msg.split("\n");
+        HashMap<String,String> state=new HashMap<String, String>();
+        for(String s:temp) {
+            if(s.contains("Data for state")) {
+                continue;
+            }
+            else {
+                String key=s.split(": ")[0];
+                String value="";
+                try {
+                    value=s.split(": ")[1];
+                } catch(Exception e) {
+                    // do nothing
+                }
+                state.put(key,value);
+            }
+        }
+        return state;
     }
 
     public HashMap<String,String> getAll() {
@@ -109,20 +142,36 @@ public class ConnectionManager {
     }
 
     public void applyObject(HashMap<String, String> object) {
-        String cmd="";
+        String cmd="objedit "+object.get("name")+";";
         for(Map.Entry<String,String> entry:object.entrySet()) {
             cmd+=" objset "+entry.getKey()+" \""+entry.getValue()+"\";";
         }
-        System.out.print("asdf "+cmd);
         execute(cmd);
     }
 
     public void saveObject(HashMap<String, String> object) {
-        String cmd="";
+        String cmd="objedit "+object.get("name")+";";
         for(Map.Entry<String,String> entry:object.entrySet()) {
             cmd+=" objset "+entry.getKey()+" \""+entry.getValue()+"\";";
         }
         cmd+=" objsave;";
+        execute(cmd);
+    }
+
+    public void applyState(HashMap<String, String> state) {
+        String cmd="stateedit "+state.get("name")+";";
+        for(Map.Entry<String,String> entry:state.entrySet()) {
+            cmd+=" stateset "+entry.getKey()+" \""+entry.getValue()+"\";";
+        }
+        execute(cmd);
+    }
+
+    public void saveState(HashMap<String, String> state) {
+        String cmd="stateedit "+state.get("name")+";";
+        for(Map.Entry<String,String> entry:state.entrySet()) {
+            cmd+=" stateset "+entry.getKey()+" \""+entry.getValue()+"\";";
+        }
+        cmd+=" statesave;";
         execute(cmd);
     }
 }
