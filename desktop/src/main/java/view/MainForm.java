@@ -9,6 +9,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -132,21 +133,19 @@ public class MainForm extends JFrame{
     private JCheckBox buyStuffForFreeCheckBox;
     private JTextField startingStoneTextField;
     private JTextField startingGoldTextField;
-    private JButton upButton;
-    private JButton downButton;
-    private JButton leftButton;
-    private JButton rightButton;
-    private JButton leftButton2;
-    private JButton rightButton1;
-    private JButton upButton2;
-    private JButton downButton2;
+    private JButton zero2three;
+    private JButton three2zero;
+    private JButton zero2one;
+    private JButton one2zero;
+    private JButton two2zero;
+    private JButton zero2two;
+    private JButton four2zero;
+    private JButton zero2four;
     private JButton kickButton;
-    private JButton banButton;
     private JButton muteButton;
     private JButton unmuteButton;
     private JButton setCommanderButton;
-    private JButton promoteButton;
-    private JButton demoteButton;
+    private JButton impeachButton;
     private JButton shuffleEvenTeamsButton;
     private JComboBox comboBox4;
     private JButton applyButton2;
@@ -277,15 +276,22 @@ public class MainForm extends JFrame{
     private JCheckBox fastBuildCheckBox;
     private JButton devReloadDataButton;
     private JButton devApplyButton;
+    private JList playerListTeam1;
+    private JList playerListTeam0;
+    private JList playerListTeam2;
+    private JList playerListTeam3;
+    private JList playerListTeam4;
     private ConnectionManager cman;
     private HashMap<String,String> reloadconfig;
     private HashMap<String,String> reloadobject;
     private HashMap<String,String> appliedobject;
     private HashMap<String,String> reloadstate;
     private HashMap<String,String> appliedstate;
+    private HashMap<String,String> playerlist;
 
     public MainForm(ConnectionManager cman) {
         setTitle("Savage Remote Controller Pro");
+        setExtendedState(this.MAXIMIZED_BOTH);
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.cman=cman;
@@ -589,6 +595,304 @@ public class MainForm extends JFrame{
                 onStateEditorSave();
             }
         });
+        playerListReloadDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPlayerListReloadData();
+            }
+        });
+        zero2one.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onZero2One();
+            }
+        });
+        one2zero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOne2Zero();
+            }
+        });
+        two2zero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onTwo2Zero();
+            }
+        });
+        zero2two.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onZero2Two();
+            }
+        });
+        zero2three.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onZero2Three();
+            }
+        });
+        three2zero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onThree2Zero();
+            }
+        });
+        four2zero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onFour2Zero();
+            }
+        });
+        zero2four.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onZero2Four();
+            }
+        });
+        playerListTeam0.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                onPlayerListTeam0Click();
+            }
+        });
+        playerListTeam1.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                onPlayerListTeam1Click();
+            }
+        });
+        playerListTeam2.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                onPlayerListTeam2Click();
+            }
+        });
+        playerListTeam3.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                onPlayerListTeam3Click();
+            }
+        });
+        playerListTeam4.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                onPlayerListTeam4Click();
+            }
+        });
+        muteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onMute();
+            }
+        });
+        unmuteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onUnmute();
+            }
+        });
+        kickButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onKick();
+            }
+        });
+        setCommanderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onSetCommander();
+            }
+        });
+        impeachButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onImpeach();
+            }
+        });
+        shuffleEvenTeamsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onShuffleEvenTeams();
+            }
+        });
+    }
+
+    private void onShuffleEvenTeams() {
+        cman.shuffleteams();
+    }
+
+    private void onImpeach() {
+        int team=0;
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            team=0;
+        }
+        if(playerListTeam1.getSelectedIndex()!=-1) {
+            team=1;
+        }
+        if(playerListTeam2.getSelectedIndex()!=-1) {
+            team=2;
+        }
+        if(playerListTeam3.getSelectedIndex()!=-1) {
+            team=3;
+        }
+        if(playerListTeam4.getSelectedIndex()!=-1) {
+            team=4;
+        }
+        cman.switchteam(team,getSelectedName());
+    }
+
+    private void onSetCommander() {
+        cman.setcmdr(getSelectedName());
+    }
+
+    private void onKick() {
+        cman.kick(getSelectedName());
+    }
+
+    private void onUnmute() {
+        cman.unmute(getSelectedName());
+    }
+
+    private void onMute() {
+        cman.mute(getSelectedName());
+    }
+
+    private void onPlayerListTeam0Click() {
+        playerListTeam1.removeSelectionInterval(0, playerListTeam1.getModel().getSize());
+        playerListTeam2.removeSelectionInterval(0, playerListTeam2.getModel().getSize());
+        playerListTeam3.removeSelectionInterval(0, playerListTeam3.getModel().getSize());
+        playerListTeam4.removeSelectionInterval(0, playerListTeam4.getModel().getSize());
+    }
+
+    private void onPlayerListTeam1Click() {
+        playerListTeam0.removeSelectionInterval(0, playerListTeam0.getModel().getSize());
+        playerListTeam2.removeSelectionInterval(0, playerListTeam2.getModel().getSize());
+        playerListTeam3.removeSelectionInterval(0, playerListTeam3.getModel().getSize());
+        playerListTeam4.removeSelectionInterval(0, playerListTeam4.getModel().getSize());
+    }
+
+    private void onPlayerListTeam2Click() {
+        playerListTeam1.removeSelectionInterval(0, playerListTeam1.getModel().getSize());
+        playerListTeam0.removeSelectionInterval(0, playerListTeam0.getModel().getSize());
+        playerListTeam3.removeSelectionInterval(0, playerListTeam3.getModel().getSize());
+        playerListTeam4.removeSelectionInterval(0, playerListTeam4.getModel().getSize());
+    }
+
+    private void onPlayerListTeam3Click() {
+        playerListTeam1.removeSelectionInterval(0, playerListTeam1.getModel().getSize());
+        playerListTeam2.removeSelectionInterval(0, playerListTeam2.getModel().getSize());
+        playerListTeam0.removeSelectionInterval(0, playerListTeam0.getModel().getSize());
+        playerListTeam4.removeSelectionInterval(0, playerListTeam4.getModel().getSize());
+    }
+
+    private void onPlayerListTeam4Click() {
+        playerListTeam1.removeSelectionInterval(0, playerListTeam1.getModel().getSize());
+        playerListTeam2.removeSelectionInterval(0, playerListTeam2.getModel().getSize());
+        playerListTeam3.removeSelectionInterval(0, playerListTeam3.getModel().getSize());
+        playerListTeam0.removeSelectionInterval(0, playerListTeam0.getModel().getSize());
+    }
+
+    private String getSelectedName() {
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            return playerListTeam0.getSelectedValue().toString();
+        }
+        else if(playerListTeam1.getSelectedIndex()!=-1) {
+            return playerListTeam1.getSelectedValue().toString();
+        }
+        else if(playerListTeam2.getSelectedIndex()!=-1) {
+            return playerListTeam2.getSelectedValue().toString();
+        }
+        else if(playerListTeam3.getSelectedIndex()!=-1) {
+            return playerListTeam3.getSelectedValue().toString();
+        }
+        else if(playerListTeam4.getSelectedIndex()!=-1) {
+            return playerListTeam4.getSelectedValue().toString();
+        }
+        else {
+            return "";
+        }
+    }
+
+    private void onZero2One() {
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            cman.switchteam(1, playerListTeam0.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onOne2Zero() {
+        if(playerListTeam1.getSelectedIndex()!=-1) {
+            cman.switchteam(0, playerListTeam1.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onZero2Two() {
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            cman.switchteam(2, playerListTeam0.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onTwo2Zero() {
+        if(playerListTeam2.getSelectedIndex()!=-1) {
+            cman.switchteam(0, playerListTeam2.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onZero2Three() {
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            cman.switchteam(3, playerListTeam0.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onThree2Zero() {
+        if(playerListTeam3.getSelectedIndex()!=-1) {
+            cman.switchteam(0, playerListTeam3.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onZero2Four() {
+        if(playerListTeam0.getSelectedIndex()!=-1) {
+            cman.switchteam(4, playerListTeam0.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onFour2Zero() {
+        if(playerListTeam4.getSelectedIndex()!=-1) {
+            cman.switchteam(0, playerListTeam4.getSelectedValue().toString());
+            onPlayerListReloadData();
+        }
+    }
+
+    private void onPlayerListReloadData() {
+        playerlist=cman.getPlayerList();
+        DefaultListModel lm0=new DefaultListModel();
+        DefaultListModel lm1=new DefaultListModel();
+        DefaultListModel lm2=new DefaultListModel();
+        DefaultListModel lm3=new DefaultListModel();
+        DefaultListModel lm4=new DefaultListModel();
+        for(Map.Entry<String,String> client:playerlist.entrySet()) {
+            if(client.getValue().equals("0")) {
+                lm0.addElement(client.getKey());
+            }
+            if(client.getValue().equals("1")) {
+                lm1.addElement(client.getKey());
+            }
+            if(client.getValue().equals("2")) {
+                lm2.addElement(client.getKey());
+            }
+            if(client.getValue().equals("3")) {
+                lm3.addElement(client.getKey());
+            }
+            if(client.getValue().equals("4")) {
+                lm4.addElement(client.getKey());
+            }
+        }
+        playerListTeam0.setModel(lm0);
+        playerListTeam1.setModel(lm1);
+        playerListTeam2.setModel(lm2);
+        playerListTeam3.setModel(lm3);
+        playerListTeam4.setModel(lm4);
     }
 
     private void onStateEditorSave() {

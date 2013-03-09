@@ -174,4 +174,38 @@ public class ConnectionManager {
         cmd+=" statesave;";
         execute(cmd);
     }
+
+    public HashMap<String, String> getPlayerList() {
+        String msg=execute("python \"import sv_srcp; sv_srcp.advancedClientList()\"");
+        HashMap<String,String> playerlist=new HashMap<String, String>();
+        for(String client:msg.split("\n")) {
+            playerlist.put(client.split("�")[0],client.split("�")[1]);
+        }
+        return playerlist;
+    }
+
+    public void switchteam(int team,String name) {
+        execute("switchteam "+team+" \""+name+"\"");
+    }
+
+    public void mute(String name) {
+        execute("mute \""+name+"\"");
+    }
+
+    public void unmute(String name) {
+        execute("unmute \""+name+"\"");
+    }
+
+    public void setcmdr(String name) {
+        execute("setcmdr \""+name+"\"");
+    }
+
+    public void kick(String name) {
+        execute("kick \""+name+"\"");
+    }
+
+    public void shuffleteams() {
+        execute("shuffleteams");
+    }
+
 }

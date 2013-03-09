@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1032" height="753"/>
+      <xy x="20" y="20" width="1085" height="753"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -315,7 +315,23 @@
                         </constraints>
                         <properties/>
                         <border type="none" title="Spectators"/>
-                        <children/>
+                        <children>
+                          <scrollpane id="5344b">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="c64f8" class="javax.swing.JList" binding="playerListTeam0">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                        </children>
                       </grid>
                       <grid id="3f6e3" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -324,7 +340,23 @@
                         </constraints>
                         <properties/>
                         <border type="none" title="Team 1"/>
-                        <children/>
+                        <children>
+                          <scrollpane id="140b7">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="958f9" class="javax.swing.JList" binding="playerListTeam1">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                        </children>
                       </grid>
                       <grid id="30cc3" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -333,7 +365,23 @@
                         </constraints>
                         <properties/>
                         <border type="none" title="Team 2"/>
-                        <children/>
+                        <children>
+                          <scrollpane id="adee3">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="417a0" class="javax.swing.JList" binding="playerListTeam2">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                        </children>
                       </grid>
                       <grid id="228ae" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -342,7 +390,23 @@
                         </constraints>
                         <properties/>
                         <border type="none" title="Team 3"/>
-                        <children/>
+                        <children>
+                          <scrollpane id="640b0">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="24727" class="javax.swing.JList" binding="playerListTeam3">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                        </children>
                       </grid>
                       <grid id="4bafa" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -351,7 +415,23 @@
                         </constraints>
                         <properties/>
                         <border type="none" title="Team 4"/>
-                        <children/>
+                        <children>
+                          <scrollpane id="11ea0">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="20db5" class="javax.swing.JList" binding="playerListTeam4">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                        </children>
                       </grid>
                       <grid id="9b9ee" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -361,7 +441,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="ef2e3" class="javax.swing.JButton" binding="upButton" default-binding="true">
+                          <component id="ef2e3" class="javax.swing.JButton" binding="zero2three">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -369,7 +449,7 @@
                               <text value="↑"/>
                             </properties>
                           </component>
-                          <component id="85523" class="javax.swing.JButton" binding="downButton" default-binding="true">
+                          <component id="85523" class="javax.swing.JButton" binding="three2zero">
                             <constraints>
                               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -387,7 +467,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="1d7aa" class="javax.swing.JButton" binding="leftButton" default-binding="true">
+                          <component id="1d7aa" class="javax.swing.JButton" binding="zero2one">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -395,7 +475,7 @@
                               <text value="←"/>
                             </properties>
                           </component>
-                          <component id="b8dd6" class="javax.swing.JButton" binding="rightButton" default-binding="true">
+                          <component id="b8dd6" class="javax.swing.JButton" binding="one2zero">
                             <constraints>
                               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -413,7 +493,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="db572" class="javax.swing.JButton" binding="leftButton2" default-binding="true">
+                          <component id="db572" class="javax.swing.JButton" binding="two2zero">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -421,7 +501,7 @@
                               <text value="←"/>
                             </properties>
                           </component>
-                          <component id="312e3" class="javax.swing.JButton" binding="rightButton1" default-binding="true">
+                          <component id="312e3" class="javax.swing.JButton" binding="zero2two">
                             <constraints>
                               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -439,7 +519,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="f4ab7" class="javax.swing.JButton" binding="upButton2" default-binding="true">
+                          <component id="f4ab7" class="javax.swing.JButton" binding="four2zero">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -447,7 +527,7 @@
                               <text value="↑"/>
                             </properties>
                           </component>
-                          <component id="b4c2b" class="javax.swing.JButton" binding="downButton2" default-binding="true">
+                          <component id="b4c2b" class="javax.swing.JButton" binding="zero2four">
                             <constraints>
                               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -457,7 +537,7 @@
                           </component>
                         </children>
                       </grid>
-                      <grid id="2cc6a" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="2cc6a" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="5" column="0" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -465,38 +545,6 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="cbb24" class="javax.swing.JButton" binding="kickButton" default-binding="true">
-                            <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <text value="Kick"/>
-                            </properties>
-                          </component>
-                          <component id="6212e" class="javax.swing.JButton" binding="banButton" default-binding="true">
-                            <constraints>
-                              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <text value="Ban"/>
-                            </properties>
-                          </component>
-                          <component id="b3e19" class="javax.swing.JButton" binding="muteButton" default-binding="true">
-                            <constraints>
-                              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <text value="Mute"/>
-                            </properties>
-                          </component>
-                          <component id="cb7ec" class="javax.swing.JButton" binding="unmuteButton" default-binding="true">
-                            <constraints>
-                              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <text value="Unmute"/>
-                            </properties>
-                          </component>
                           <component id="8821d" class="javax.swing.JButton" binding="setCommanderButton" default-binding="true">
                             <constraints>
                               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -505,28 +553,44 @@
                               <text value="Set Commander"/>
                             </properties>
                           </component>
-                          <component id="a9893" class="javax.swing.JButton" binding="promoteButton" default-binding="true">
+                          <component id="ddc6e" class="javax.swing.JButton" binding="impeachButton">
                             <constraints>
                               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Promote"/>
-                            </properties>
-                          </component>
-                          <component id="ddc6e" class="javax.swing.JButton" binding="demoteButton" default-binding="true">
-                            <constraints>
-                              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <text value="Demote"/>
+                              <text value="Impeach"/>
                             </properties>
                           </component>
                           <component id="a66e5" class="javax.swing.JButton" binding="shuffleEvenTeamsButton" default-binding="true">
                             <constraints>
-                              <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <text value="Shuffle/Even Teams"/>
+                            </properties>
+                          </component>
+                          <component id="b3e19" class="javax.swing.JButton" binding="muteButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Mute"/>
+                            </properties>
+                          </component>
+                          <component id="cb7ec" class="javax.swing.JButton" binding="unmuteButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Unmute"/>
+                            </properties>
+                          </component>
+                          <component id="cbb24" class="javax.swing.JButton" binding="kickButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Kick"/>
                             </properties>
                           </component>
                         </children>
