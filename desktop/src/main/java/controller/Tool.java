@@ -9,11 +9,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -177,4 +179,129 @@ public class Tool {
     public static boolean isDifferent(HashMap<String,String> normal,HashMap<String,String> changed) {
         return !getChange(normal,changed).isEmpty();
     }
+
+    public static HashMap<String,String> getDefaultObject() {
+        String str=readFile("default.object");
+        str=str.replace(" \"","\"");
+        HashMap<String,String> defaultobject=new HashMap<String, String>();
+        Pattern pattern = Pattern.compile("(.*?)\"(.*?)\"");
+        while(!str.isEmpty()) {
+            Matcher matcher = pattern.matcher(str);
+            String key="";
+            String value="";
+            if (matcher.find()) {
+                key=matcher.group(1);
+                value=matcher.group(2);
+                str=str.replace(key+"\""+value+"\"","");
+            }
+            defaultobject.put(key,value);
+        }
+        return defaultobject;
+    }
+
+    public static HashMap<String,String> extendObject(HashMap<String,String> object) {
+        HashMap<String,String> defaultobject=getDefaultObject();
+        for(Map.Entry<String,String> entry:object.entrySet()) {
+            defaultobject.put(entry.getKey(),entry.getValue());
+        }
+        return defaultobject;
+    }
+
+    public static HashMap<String,String> getDefaultState() {
+        String str=readFile("default.state");
+        str=str.replace(" \"","\"");
+        HashMap<String,String> defaultstate=new HashMap<String, String>();
+        Pattern pattern = Pattern.compile("(.*?)\"(.*?)\"");
+        while(!str.isEmpty()) {
+            Matcher matcher = pattern.matcher(str);
+            String key="";
+            String value="";
+            if (matcher.find()) {
+                key=matcher.group(1);
+                value=matcher.group(2);
+                str=str.replace(key+"\""+value+"\"","");
+            }
+            defaultstate.put(key,value);
+        }
+        return defaultstate;
+    }
+
+    public static HashMap<String,String> extendState(HashMap<String,String> state) {
+        HashMap<String,String> defaultstate=getDefaultState();
+        for(Map.Entry<String,String> entry:state.entrySet()) {
+            defaultstate.put(entry.getKey(),entry.getValue());
+        }
+        return defaultstate;
+    }
+
+    public static void write(String path, String[] str)
+    {
+        try {
+        File file = new File(path);
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+
+        for (int i = 0; i < str.length; i++) {
+            if(str[i]!=null)
+            {
+                bw.write(str[i]);
+                bw.newLine();
+            }
+        }
+
+        bw.flush();
+        bw.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String[] read(String path)
+    {
+        try {
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String line;
+
+            int i=0;
+            while ((line = br.readLine()) != null) {
+                i++;
+            }
+            String[] str=new String[i];
+            br = new BufferedReader(new FileReader(file));
+            i=0;
+            while ((line = br.readLine()) != null) {
+                str[i]=line;
+                i++;
+            }
+
+            br.close();
+            return str;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String readFile(String path)
+    {
+        try {
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String line;
+            String str="";
+
+            while ((line = br.readLine()) != null) {
+                str+=line;
+            }
+
+            br.close();
+            return str;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

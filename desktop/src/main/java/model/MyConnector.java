@@ -29,13 +29,11 @@ public class MyConnector {
         socket = new Socket();
         socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
         out = new PrintWriter(socket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out.write(msg);
         out.flush();
     }
 
     public String read() throws Exception {
-        out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         StringBuilder response = new StringBuilder();
         String line;
@@ -48,8 +46,8 @@ public class MyConnector {
     }
 
     public String send(String msg) throws Exception {
-        System.out.println("CLIENT: "+msg);
         write(msg);
+        System.out.println("CLIENT: "+msg);
         String answer=read();
         System.out.println("SERVER: "+answer);
         return answer;
@@ -57,8 +55,8 @@ public class MyConnector {
 
     public String getCookie() throws Exception {
         String msg="KS_HI";
-        System.out.println("CLIENT: "+msg);
         write(msg);
+        System.out.println("CLIENT: "+msg);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         StringBuilder response = new StringBuilder();

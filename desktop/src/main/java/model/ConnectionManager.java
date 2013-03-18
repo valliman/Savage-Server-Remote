@@ -47,6 +47,40 @@ public class ConnectionManager {
         return msg;
     }
 
+    public String getObjectSetting(String objectname, String settingname) {
+        String cmd="objedit "+objectname+"; objset "+settingname;
+        String msg;
+        msg=execute(cmd);
+        msg=msg.replace(settingname+": ","");
+        msg=msg.replace("\"","");
+        return msg;
+    }
+
+    public HashMap<String,String> getObjectSettings(String objectname, String settingnames[]) {
+        HashMap<String,String> config=new HashMap<String, String>();
+        for(int i=0; i<settingnames.length; i++) {
+            config.put(settingnames[i],getObjectSetting(objectname,settingnames[i]));
+        }
+        return config;
+    }
+
+    public String getStateSetting(String statename, String settingname) {
+        String cmd="stateedit "+statename+"; stateset "+settingname;
+        String msg;
+        msg=execute(cmd);
+        msg=msg.replace(settingname+": ","");
+        msg=msg.replace("\"","");
+        return msg;
+    }
+
+    public HashMap<String,String> getStateSettings(String statename, String settingnames[]) {
+        HashMap<String,String> config=new HashMap<String, String>();
+        for(int i=0; i<settingnames.length; i++) {
+            config.put(settingnames[i],getObjectSetting(statename,settingnames[i]));
+        }
+        return config;
+    }
+
     public HashMap<String,String> get(String[] names) {
         String cmd="";
         for(String s:names) {

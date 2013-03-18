@@ -912,19 +912,19 @@ public class MainForm extends JFrame{
         if(Tool.isDifferent(appliedstate,applystate)) {
             QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
             if(qd.getAnswer()) {
-                reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+                reloadstate=Tool.extendState(cman.getState(stateEditorComboBox.getSelectedItem().toString()));
                 appliedstate=reloadstate;
                 stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
             }
             else {
                 onStateEditorApply();
-                reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+                reloadstate=Tool.extendState(cman.getState(stateEditorComboBox.getSelectedItem().toString()));
                 appliedstate=reloadstate;
                 stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
             }
         }
         else {
-            reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+            reloadstate=Tool.extendState(cman.getState(stateEditorComboBox.getSelectedItem().toString()));
             appliedstate=reloadstate;
             stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
         }
@@ -940,7 +940,7 @@ public class MainForm extends JFrame{
         for(String s:temp) {
             stateEditorComboBox.addItem(s.split(":")[1]);
         }
-        reloadstate=cman.getState(stateEditorComboBox.getSelectedItem().toString());
+        reloadstate=Tool.extendState(cman.getState(stateEditorComboBox.getSelectedItem().toString()));
         appliedstate=reloadstate;
         stateEditorTable.setModel(Tool.HashMap2TableModel(reloadstate));
     }
@@ -962,19 +962,19 @@ public class MainForm extends JFrame{
         if(Tool.isDifferent(appliedobject,applyobject)) {
             QuestionDialog qd=new QuestionDialog("","Are you sure you want to discard your changes?");
             if(qd.getAnswer()) {
-                reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+                reloadobject=Tool.extendObject(cman.getObject(objectEditorComboBox.getSelectedItem().toString()));
                 appliedobject=reloadobject;
                 objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
             }
             else {
                 onObjectEditorApply();
-                reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+                reloadobject=Tool.extendObject(cman.getObject(objectEditorComboBox.getSelectedItem().toString()));
                 appliedobject=reloadobject;
                 objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
             }
         }
         else {
-            reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+            reloadobject=Tool.extendObject(cman.getObject(objectEditorComboBox.getSelectedItem().toString()));
             appliedobject=reloadobject;
             objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
         }
@@ -990,7 +990,7 @@ public class MainForm extends JFrame{
         for(String s:temp) {
                 objectEditorComboBox.addItem(s.split(":")[1]);
         }
-        reloadobject=cman.getObject(objectEditorComboBox.getSelectedItem().toString());
+        reloadobject=Tool.extendObject(cman.getObject(objectEditorComboBox.getSelectedItem().toString()));
         appliedobject=reloadobject;
         objectEditorTable.setModel(Tool.HashMap2TableModel(reloadobject));
     }
