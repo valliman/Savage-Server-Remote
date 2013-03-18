@@ -741,7 +741,8 @@ public class MainForm extends JFrame{
     }
 
     private void onKick() {
-        cman.kick(getSelectedName());
+        AnswerDialog answerDialog=new AnswerDialog("Reason?","Reason:");
+        cman.kick(getSelectedName(),answerDialog.getAnswer());
     }
 
     private void onUnmute() {
@@ -1822,7 +1823,7 @@ public class MainForm extends JFrame{
         config.put("sv_teamSwitchDelay",teamSwitchDelayTextField.getText());
         config.put("sv_teamSwitchConnectFreedom",teamSwitchFreedomTextField.getText());
         config.put("sv_respawntime",respawnTimeTextField.getText());
-        config.put("sv_ressurectTime",resurrectTimeTextField.getText()); //TODO: Schauen ob Variable nicht sv_resurrectTime stattdessen heißt!
+        config.put("sv_ressurectTime",resurrectTimeTextField.getText());
         config.put("sv_invincibleTime",invincibleTimeTextField.getText());
         config.put("sv_invincibleTime_respawn",invincibleTimeRespawnFactorTextField.getText());
         config.put("sv_skillfullKillDist",skillfullKillDistanceTextField.getText());

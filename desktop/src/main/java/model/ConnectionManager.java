@@ -240,8 +240,10 @@ public class ConnectionManager {
         execute("setcmdr \""+name+"\"");
     }
 
-    public void kick(String name) {
-        execute("kick \""+name+"\"");
+    public void kick(String name, String reason) {
+        String cmd="set kick_reason \""+reason+"\"; kick "+getIndexFromName(name)+" #kick_reason#";
+        System.out.println(cmd);
+        //execute("set kick_reason \""+reason+"\"; kick \""+getIndexFromName(name)+" #kick_reason#");
     }
 
     public void shuffleteams() {
@@ -250,5 +252,9 @@ public class ConnectionManager {
 
     public void nextmap() {
         execute("world "+get("sv_nextmap"));
+    }
+
+    public String getIndexFromName(String name) {
+        return execute("python \"import core; import sv_utils; core.ConsolePrint(str(sv_utils.getIndexFromName('"+name+"')))\"").replace("\n","");
     }
 }
