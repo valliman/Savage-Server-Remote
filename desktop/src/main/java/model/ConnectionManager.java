@@ -1,7 +1,7 @@
 package model;
 
-import at.valli.savage.connection.ConnectionException;
-import at.valli.savage.connection.StatefulConnector;
+//import at.valli.savage.connection.ConnectionException;
+//import at.valli.savage.connection.StatefulConnector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +15,16 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ConnectionManager {
-    StatefulConnector connector;
+    //StatefulConnector connector;
+    MyConnector connector;
 
     public ConnectionManager(String ip, String port, String password) {
-        connector=new StatefulConnector(ip,Integer.parseInt(port),password);
+        connector=null;
+        try {
+            connector=new MyConnector(ip,Integer.parseInt(port),password);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public void set(String name, String value) {
@@ -135,7 +141,7 @@ public class ConnectionManager {
         String msg="";
         try {
             msg=connector.execute(cmd);
-        } catch (ConnectionException e) {
+        } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return msg;
@@ -208,4 +214,7 @@ public class ConnectionManager {
         execute("shuffleteams");
     }
 
+    public void nextmap() {
+        execute("world "+get("sv_nextmap"));
+    }
 }

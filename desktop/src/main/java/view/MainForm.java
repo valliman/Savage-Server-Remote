@@ -1917,7 +1917,7 @@ public class MainForm extends JFrame{
     }
 
     private void onNextMap() {
-        cman.execute("nextmap");
+        cman.nextmap();
     }
 
     private void onUnpause() {
