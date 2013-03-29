@@ -2,6 +2,7 @@ package controller;
 
 import view.MessageDialog;
 import view.MyTableModel;
+import view.PlayerListTableModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,10 +11,10 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,9 @@ import java.util.regex.Pattern;
  * To change this template use File | Settings | File Templates.
  */
 public class Tool {
+    public final static String build="29032013";
+    public final static String pastebin="http://pastebin.com/raw.php?i=RzpAHJyc";
+    public final static String dl="https://www.google.at/";
 
     public static void main(String[] args) {
         System.out.println(Tool.validIP("192.168.0.1"));
@@ -154,6 +158,16 @@ public class Tool {
         for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry)it.next();
             model.addRow(new Object[] { entry.getKey(), entry.getValue() });
+        }
+        return model;
+    }
+
+    public static TableModel ArrayHashMap2TableModel(ArrayList<HashMap<String,String>> clientlist) {
+        DefaultTableModel model = new PlayerListTableModel(
+                new Object[] { "id", "nickname", "uid", "ip", "cstate", "maxp" }, 0
+        );
+        for (HashMap<String,String> client:clientlist) {
+            model.addRow(new Object[] { client.get("id"), client.get("nickname"), client.get("uid"), client.get("ip"), client.get("cstate"), client.get("maxp") });
         }
         return model;
     }
@@ -304,4 +318,77 @@ public class Tool {
         }
     }
 
+    public static boolean checkVersion() {
+        boolean same=false;
+        try
+        {
+            URL url = new URL(pastebin);
+            Scanner s = new Scanner(url.openStream());
+            while (s.hasNext())
+            {
+                String line=s.nextLine();
+                System.out.println("BUILD: "+line);
+                if(line.equals(build)) {
+                    same=true;
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return same;
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void openWebpage(URL url) {
+        try {
+            openWebpage(url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void goToDownloadPage() {
+        try {
+            URL url=new URL(dl);
+            openWebpage(url);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<HashMap<String,String>> getDataFromClientList(String clientlist) {
+        ArrayList<HashMap<String,String>> data=new ArrayList<HashMap<String,String>>();
+        clientlist=clientlist.replace("\n","");
+        clientlist=clientlist.replace("Client ","�id=");
+        clientlist=clientlist.replace(":  addr = ",";ip=");
+        clientlist=clientlist.replace(" (id ",";uid=");
+        clientlist=clientlist.replace("), reqname = ",";nickname=");
+        clientlist=clientlist.replace(", cstate = ",";cstate=");
+        clientlist=clientlist.replace(", maxp = ",";maxp=");
+        String[] lines=clientlist.split("�");
+        for(String line:lines) {
+            if(line==null || line.equals("")) continue;
+            HashMap<String,String> client=new HashMap<String, String>();
+            String[] keyvalue=line.split(";");
+            client.put(keyvalue[0].split("=")[0], keyvalue[0].split("=")[1]);
+            client.put(keyvalue[1].split("=")[0],keyvalue[1].split("=")[1]);
+            client.put(keyvalue[2].split("=")[0],keyvalue[2].split("=")[1]);
+            client.put(keyvalue[3].split("=")[0],keyvalue[3].split("=")[1]);
+            client.put(keyvalue[4].split("=")[0],keyvalue[4].split("=")[1]);
+            client.put(keyvalue[5].split("=")[0],keyvalue[5].split("=")[1]);
+            data.add(client);
+        }
+        return data;
+    }
 }

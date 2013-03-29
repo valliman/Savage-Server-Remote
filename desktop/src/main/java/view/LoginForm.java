@@ -56,6 +56,7 @@ public class LoginForm extends JFrame{
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
 
         favoritesList.addListSelectionListener(new ListSelectionListener() {
@@ -169,8 +170,13 @@ public class LoginForm extends JFrame{
     private void onConnect() {
         if(Tool.isValid(ipTextField.getText(), portTextField.getText(), passwordTextField.getText())) {
             ConnectionManager cman=new ConnectionManager(ipTextField.getText(), portTextField.getText(), passwordTextField.getText());
-            dispose();
-            new MainForm(cman);
+            if(cman.check()) {
+                dispose();
+                new MainForm(cman);
+            }
+            else {
+                MessageDialog md=new MessageDialog("Error!","Connection cannot be established!");
+            }
         }
     }
 

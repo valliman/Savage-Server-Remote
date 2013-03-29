@@ -21,6 +21,7 @@ public class MessageDialog extends JDialog {
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

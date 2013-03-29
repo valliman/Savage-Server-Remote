@@ -33,6 +33,7 @@ public class UploadMapForm extends JFrame{
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
         uploadMapTextField.addKeyListener(new KeyAdapter() {
             @Override

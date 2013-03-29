@@ -37,6 +37,7 @@ public class LoadMapForm extends JFrame{
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
         loadMapComboBox.addItemListener(new ItemListener() {
             @Override

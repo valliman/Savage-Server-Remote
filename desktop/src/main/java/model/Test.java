@@ -3,6 +3,8 @@ package model;
 import controller.Tool;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +16,7 @@ import java.io.*;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        //ConnectionManager cman=new ConnectionManager("127.0.0.1","11235","Lee7Dub5");
+        ConnectionManager cman=new ConnectionManager("127.0.0.1","11235","Lee7Dub5");
         /*String s=cman.execute("python \"import sv_srcp; sv_srcp.advancedClientList()\"");
         System.out.println(s);
         System.out.println(s.contains("�"));*/
@@ -43,7 +45,11 @@ public class Test {
         /*File f=new File("default.state");
         System.out.println(f.getAbsolutePath());*/
         //System.out.println(Tool.getDefaultObject().toString());
-        System.out.println(Tool.getDefaultObject());
+        //System.out.println(Tool.getDefaultObject());
+        ArrayList<HashMap<String,String>> data=Tool.getDataFromClientList(cman.getClientList());
+        for(HashMap<String,String> d:data) {
+            System.out.println(d.toString());
+        }
 
     }
 

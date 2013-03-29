@@ -23,6 +23,7 @@ public class AnswerDialog extends JDialog {
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

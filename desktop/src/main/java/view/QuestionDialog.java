@@ -29,6 +29,7 @@ public class QuestionDialog extends JDialog {
             }
         });
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ConnectionManager {
     //StatefulConnector connector;
-    MyConnector connector;
+    public MyConnector connector;
 
     public ConnectionManager(String ip, String port, String password) {
         connector=null;
@@ -25,6 +25,16 @@ public class ConnectionManager {
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    public boolean check() {
+        boolean check=false;
+        try {
+            check=connector.check;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check;
     }
 
     public void set(String name, String value) {
@@ -256,5 +266,18 @@ public class ConnectionManager {
 
     public String getIndexFromName(String name) {
         return execute("python \"import core; import sv_utils; core.ConsolePrint(str(sv_utils.getIndexFromName('"+name+"')))\"").replace("\n","");
+    }
+
+    public String getClientList() {
+        return execute("clientlist");
+    }
+
+    public boolean checkMyPythonScriptInstalled() {
+        String msg="";
+        msg=execute("python \"import sv_srcp; sv_srcp.check()\"");
+        if(msg.contains("hello")) {
+            return true;
+        }
+        else return false;
     }
 }
