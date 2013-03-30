@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class MessageDialog extends JDialog {
                 onOK();
             }
         });
+        setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);

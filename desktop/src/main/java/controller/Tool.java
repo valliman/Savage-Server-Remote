@@ -26,15 +26,23 @@ import java.util.regex.Pattern;
  * To change this template use File | Settings | File Templates.
  */
 public class Tool {
-    public final static String build="29032013";
-    public final static String pastebin="http://pastebin.com/raw.php?i=RzpAHJyc";
-    public final static String dl="https://www.google.at/";
+    public final static String build="30032013";
+    public final static String buildurl ="http://pastebin.com/raw.php?i=RzpAHJyc";
+    public final static String defaultobjecturl="http://pastebin.com/raw.php?i=exw5MPWp";
+    public final static String defaultstateurl="http://pastebin.com/raw.php?i=6wPpFnws";
+    public final static String dl="https://www.dropbox.com/sh/jzry2jz730bkbvd/P-gO94aAha";
+    public static HashMap<String,String> defaultobject=getDefaultObject();
+    public static HashMap<String,String> defaultstate=getDefaultState();
 
     public static void main(String[] args) {
-        System.out.println(Tool.validIP("192.168.0.1"));
-        System.out.println(Tool.validIP("192.168.0.300"));
-        System.out.println(Tool.validIP("192.168.0.1.1"));
-        System.out.println(Tool.validIP("asd.asd.a.s"));
+        System.out.println(Tool.validHost("192.168.0.1"));
+        System.out.println(Tool.validHost("www.google.at"));
+        System.out.println(Tool.validHost("192.168.0.300"));
+        System.out.println(Tool.validHost("192.168.0.1.1"));
+        System.out.println(Tool.validHost("asd.asd.a.s"));
+        System.out.println(Tool.validHost("300.2.3.1"));
+        System.out.println(Tool.validHost("200.2.3"));
+        System.out.println(Tool.validHost("asd.asd.a"));
         System.out.println(Tool.validPort("11235"));
         System.out.println(Tool.validPort("100000"));
         System.out.println(Tool.validPort("asdf"));
@@ -42,8 +50,8 @@ public class Tool {
         System.out.println(Tool.validPassword(""));
     }
 
-    public static boolean validIP(String ip) {
-        String[] parts=ip.split("\\.");
+    public static boolean validHost(String host) {
+        /*String[] parts=ip.split("\\.");
 
         if(parts.length!=4) {
             return false;
@@ -61,9 +69,38 @@ public class Tool {
             if((i<0)||(i>255)) {
                 return false;
             }
+        }*/
+        String ValidIpAddressRegex = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+        String ValidHostnameRegex = "^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\\.?$";
+        String containsLetters = "^[a-zA-Z]{1,25}$";
+        Pattern ippattern=Pattern.compile(ValidIpAddressRegex);
+        Pattern hostpattern=Pattern.compile(ValidHostnameRegex);
+        Pattern letterpattern=Pattern.compile(containsLetters);
+        Matcher ipmatcher=ippattern.matcher(host);
+        Matcher hostmatcher=hostpattern.matcher(host);
+        Matcher lettermatcher=letterpattern.matcher(host);
+        if(containsLetters(host)) {
+            if(hostmatcher.matches()) {
+                return true;
+            }
         }
+        else {
+            if(ipmatcher.matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        return true;
+    public static boolean containsLetters(String s) {
+        for(int i=0; i<s.length(); i++) {
+            char c=s.charAt(i);
+            int j=c;
+            if((j>=65&&j<=90)||(j>=97&&j<=122)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean validPort(String port) {
@@ -92,7 +129,7 @@ public class Tool {
     public static boolean isValid(String ip, String port, String password) {
         String errorMsg="";
         int counter=0;
-        if(!validIP(ip)) {
+        if(!validHost(ip)) {
             counter++;
             errorMsg+=" IP";
         }
@@ -195,7 +232,15 @@ public class Tool {
     }
 
     public static HashMap<String,String> getDefaultObject() {
-        String str=readFile("default.object");
+        String str="";
+        if(fileExists(defaultobjecturl)) {
+            str=readFile("default.object");
+        }
+        else {
+            saveOnlineFile("default.object",defaultobjecturl);
+            str=readFile("default.object");
+        }
+        System.out.println(str);
         str=str.replace(" \"","\"");
         HashMap<String,String> defaultobject=new HashMap<String, String>();
         Pattern pattern = Pattern.compile("(.*?)\"(.*?)\"");
@@ -214,15 +259,22 @@ public class Tool {
     }
 
     public static HashMap<String,String> extendObject(HashMap<String,String> object) {
-        HashMap<String,String> defaultobject=getDefaultObject();
+        HashMap<String,String> mydefaultobject=defaultobject;
         for(Map.Entry<String,String> entry:object.entrySet()) {
-            defaultobject.put(entry.getKey(),entry.getValue());
+            mydefaultobject.put(entry.getKey(),entry.getValue());
         }
-        return defaultobject;
+        return mydefaultobject;
     }
 
     public static HashMap<String,String> getDefaultState() {
-        String str=readFile("default.state");
+        String str="";
+        if(fileExists(defaultstateurl)) {
+            str=readFile("default.state");
+        }
+        else {
+            saveOnlineFile("default.state",defaultstateurl);
+            str=readFile("default.state");
+        }
         str=str.replace(" \"","\"");
         HashMap<String,String> defaultstate=new HashMap<String, String>();
         Pattern pattern = Pattern.compile("(.*?)\"(.*?)\"");
@@ -241,11 +293,11 @@ public class Tool {
     }
 
     public static HashMap<String,String> extendState(HashMap<String,String> state) {
-        HashMap<String,String> defaultstate=getDefaultState();
+        HashMap<String,String> mydefaultstate=defaultstate;
         for(Map.Entry<String,String> entry:state.entrySet()) {
-            defaultstate.put(entry.getKey(),entry.getValue());
+            mydefaultstate.put(entry.getKey(),entry.getValue());
         }
-        return defaultstate;
+        return mydefaultstate;
     }
 
     public static void write(String path, String[] str)
@@ -291,9 +343,19 @@ public class Tool {
 
             br.close();
             return str;
-        } catch (IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static boolean fileExists(String path) {
+        try {
+            File file=new File(path);
+            return file.exists();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -322,7 +384,7 @@ public class Tool {
         boolean same=false;
         try
         {
-            URL url = new URL(pastebin);
+            URL url = new URL(buildurl);
             Scanner s = new Scanner(url.openStream());
             while (s.hasNext())
             {
@@ -337,6 +399,56 @@ public class Tool {
             e.printStackTrace();
         }
         return same;
+    }
+
+    public static String readOnlineFile(String surl) {
+        String text="";
+        try
+        {
+            URL url = new URL(surl);
+            Scanner s = new Scanner(url.openStream());
+            while (s.hasNext())
+            {
+                String line=s.nextLine();
+                text+=line+"\n";
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return text;
+    }
+
+    public static void saveOnlineFile(String filename, String urlString) {
+            BufferedInputStream in = null;
+            FileOutputStream fout = null;
+            try
+            {
+                in = new BufferedInputStream(new URL(urlString).openStream());
+                fout = new FileOutputStream(filename);
+
+                byte data[] = new byte[1024];
+                int count;
+                while ((count = in.read(data, 0, 1024)) != -1)
+                {
+                    fout.write(data, 0, count);
+                }
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally
+            {
+                try {
+                    if (in != null)
+                        in.close();
+                    if (fout != null)
+                        fout.close();
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
     }
 
     public static void openWebpage(URI uri) {

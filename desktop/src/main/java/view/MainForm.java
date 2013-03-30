@@ -6,6 +6,7 @@ import model.ConnectionManager;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -297,7 +298,7 @@ public class MainForm extends JFrame{
     private HashMap<String,String> advancedPlayerList;
 
     public MainForm(ConnectionManager cman) {
-        setTitle("Savage Server Remote Controller Pro");
+        setTitle("Savage Server Remote Controller Pro - by Crashday a.k.a. Bernhard Fritz");
         //setExtendedState(this.MAXIMIZED_BOTH);
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -503,15 +504,17 @@ public class MainForm extends JFrame{
         consoleTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     onConsoleSend();
                 }
             }
         });
         tabbedPane2.setEnabledAt(2,cman.checkMyPythonScriptInstalled());
+        setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        onOverviewReloadData();
 
         overviewReloadDataButton.addActionListener(new ActionListener() {
             @Override
@@ -1196,7 +1199,12 @@ public class MainForm extends JFrame{
         if(tpm.length()<2) tpm="0"+tpm;
         if(tps.length()<2) tps="0"+tps;
         timePlayedLabel.setText(tpm+":"+tps);
-        int mslimit=Integer.parseInt(config.get("sv_timeLimit"));
+        int mslimit=3600000;
+        try {
+            mslimit=Integer.parseInt(config.get("sv_timeLimit"));
+        } catch(Exception e) {
+            // do nothing
+        }
         int msleft=mslimit-msplayed;
         int mleft=msleft/60000;
         int sleft=(int)((float)((msleft%60000)/1000));
@@ -1960,7 +1968,7 @@ public class MainForm extends JFrame{
         joinPasswordTextField.setText(config.get("svr_password"));
         adminPasswordTextField.setText(config.get("svr_adminpassword"));
         refereePasswordTextField.setText(config.get("sv_refereePassword"));
-        godRefPasswordTextField.setText("sv_refGodPassword");
+        godRefPasswordTextField.setText(config.get("sv_refGodPassword"));
         if (config.get("sv_team1race").equals("beast")) team1ComboBox.setSelectedIndex(0);
         else team1ComboBox.setSelectedIndex(1);
         if (config.get("sv_team2race").equals("beast")) team2ComboBox.setSelectedIndex(0);

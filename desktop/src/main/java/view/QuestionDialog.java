@@ -1,7 +1,9 @@
 package view;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class QuestionDialog extends JDialog {
     private JPanel contentPane;
@@ -28,6 +30,7 @@ public class QuestionDialog extends JDialog {
                 onNo();
             }
         });
+        setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
